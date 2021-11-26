@@ -1,0 +1,86 @@
+import * as React from 'react'
+import Header from './components/header'
+import { TeamSummaryHeader } from './components/headerelements/TeamSummaryHeader';
+import AppMode from './enums/AppModes';
+import { MainGameContent } from './components/MainGameContent';
+import { ApiClient } from './apiclient/ApiClient';
+import { useInterval } from './apiclient/UseInterval';
+import { ClientRole, ClientRoleFromString } from './enums/ClientRole';
+import { Game } from './apiclient/models/Game';
+import { GameStatus, GameStatusFromString } from './enums/GameStatus';
+import { MenuData } from './components/menu/MenuItem';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+
+const App = (props: { role: string, team: 1 | 2 | undefined }) => {
+  const pollInterval: number = 5;
+  const role: ClientRole = ClientRoleFromString(props.role);
+  const [mode, changeMode] = React.useState<AppMode>(role == ClientRole.Host ?
+    AppMode.GameSettings :
+    AppMode.QuestionMode);
+  const [game, changeGame] = React.useState<Game>(null);
+  const [autoPollPeriod, changeAutoPoll] = React.useState<number>(5);
+  if (game) {
+    game.gameStatus = GameStatusFromString(game.status);
+  }
+
+  const updateGameStatus: () => void = () => {
+    ApiClient.getClient(undefined).getGameStatus().then(
+      (value: Game) => {
+        changeGame(value);
+      }
+    )
+  }
+  useInterval(updateGameStatus, autoPollPeriod);
+
+  const toggleAutoPoll: () => void = () => {
+    changeAutoPoll(autoPollPeriod ? null : pollInterval);
+  }
+
+  const status: GameStatus = game?.gameStatus;
+  React.useEffect(() => {
+    updateGameStatus()
+  }, []);
+  const menuItems: MenuData[] = role == ClientRole.Host ? [
+    { 'name': 'Dashboard', 'mode': AppMode.Dashboard },
+    { 'name': 'Question selection', 'mode': AppMode.GameSettings },
+    { 'name': 'Question mode', 'mode': AppMode.QuestionMode },
+    { 'name': 'Autopoll', 'mode': undefined, 'additionalClickAction': toggleAutoPoll, 'icon': autoPollPeriod ? <CheckIcon /> : <ClearIcon /> }
+  ] : [{ 'name': 'Question mode', 'mode': AppMode.QuestionMode },
+  { 'name': 'Autopoll', 'mode': undefined, 'additionalClickAction': toggleAutoPoll, 'icon': autoPollPeriod ? <CheckIcon /> : <ClearIcon /> }]
+
+  return (
+    <>
+      <Header
+        menuItems={menuItems}
+        currentMode={mode}
+        currentRole={role}
+        status={status}
+        teamNumber={props.team}
+        titleProvider={
+          () => {
+            return `Milman's Family Thanksgiving quiz game`;
+          }
+        }
+        changeModeAction={(mode: AppMode) => {
+          changeMode(mode);
+          ApiClient.getClient(undefined).getGameStatus().then(
+            (value: Game) => {
+              changeGame(value);
+            }
+          );
+        }}
+        beforeTitleElement={game?.teams?.length > 1 && <TeamSummaryHeader team={game.teams[0]} />}
+        afterTitleElement={game?.teams?.length > 1 && <TeamSummaryHeader team={game.teams[1]} />}
+      />
+      <MainGameContent
+        currentMode={mode}
+        game={game}
+        currentRole={role}
+        status={status}
+        teamNumber={props.team} />
+    </>
+  )
+}
+
+export default App

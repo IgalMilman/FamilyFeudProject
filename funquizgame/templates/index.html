@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load render_bundle from webpack_loader %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <title>My Site</title>
+  <script>window.role = "{{role}}";
+  window.teamnumber = {% if teamnumber %}
+   {{teamnumber}}
+{% else %}
+undefined
+{% endif %};</script>
+  <style>
+  .team1background{
+    background-color: lightcoral;
+  }
+  .team2background{
+    background-color: lightgreen;
+  }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  {% render_bundle 'frontend' %}
+  <app></app>
+</body>
+</html>
