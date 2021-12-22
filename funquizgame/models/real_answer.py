@@ -1,7 +1,7 @@
 from django.db.models.deletion import CASCADE
 
 from django.db import models
-from funquizgame.data_getters.common_types import QuestionTypes, RequesterRole
+from funquizgame.common.common_types import QuestionTypes, RequesterRole
 from funquizgame.models.question_data import QuestionData
 from funquizgame.models.team import Team
 from funquizgame.models.answer_data import AnswerData
@@ -28,7 +28,7 @@ class RealAnswer(RealDataAbstract):
         }
 
     def json(self, role: RequesterRole) -> dict:
-        if role == RequesterRole.VIEWER:
+        if role is RequesterRole.VIEWER:
             result = self.main_data()
             if self.is_shown:
                     if self.answer_data is not None:
@@ -37,7 +37,7 @@ class RealAnswer(RealDataAbstract):
                     result['value'] = self.value
                     result['add_points'] = self.additional_points
             return result
-        elif role == RequesterRole.HOST:
+        elif role.is_host():
             result = self.main_data()
             if self.answer_data is not None:
                 result['answerdata'] = self.answer_data.json(role)
@@ -52,10 +52,10 @@ class RealAnswer(RealDataAbstract):
         if question.question_type == QuestionTypes.FAMILY_FUID:
             for answer in question.answerdata_set.all().order_by('-points_value'):
                 RealAnswer.objects.get_or_create(question=realquestion, game=realquestion.game, answer_data=answer)
-        else:
-            for team in realquestion.game.team_set.all().order_by('number'):
-                #RealAnswer.objects.get_or_create(question=realquestion, game=realquestion.game, team=team)
-                pass
+        # else:
+        #     for team in realquestion.game.team_set.all().order_by('number'):
+        #         RealAnswer.objects.get_or_create(question=realquestion, game=realquestion.game, team=team)
+        #         pass
 
     @staticmethod
     def get_real_answer_object(team:Team, question:RealQuestion, answer:AnswerData):

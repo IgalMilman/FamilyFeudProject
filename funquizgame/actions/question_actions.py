@@ -6,7 +6,8 @@ import pytz
 from django.core import serializers
 from django.http.request import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
-from funquizgame.data_getters.common_types import RequesterRole
+from funquizgame.common.common_exceptions import ValidationException
+from funquizgame.common.common_types import RequesterRole
 from funquizgame.models.answer_data import AnswerData
 from funquizgame.models.question_data import QuestionData
 from funquizgame.models.real_answer import RealAnswer
@@ -14,7 +15,7 @@ from funquizgame.models.real_question import RealQuestion
 from funquizgame.models.team import Team
 
 
-def give_answer(request: HttpRequest, role: RequesterRole, questionid: str) -> dict:
+def give_answer(request: HttpRequest, role: RequesterRole, game_id, questionid: str) -> dict:
     result = {}
     try:
         body = json.loads(request.body.decode('utf-8'))
@@ -55,7 +56,7 @@ def give_answer(request: HttpRequest, role: RequesterRole, questionid: str) -> d
     return result
 
 
-def reveal_question(request: HttpRequest, role: RequesterRole, questionid: str) -> dict:
+def reveal_question(request: HttpRequest, role: RequesterRole, game_id, questionid: str) -> dict:
     result = {}
     try:
         question = RealQuestion.objects.get(unid=questionid)
@@ -71,7 +72,7 @@ def reveal_question(request: HttpRequest, role: RequesterRole, questionid: str) 
     return result
 
 
-def complete_question(request: HttpRequest, role: RequesterRole, questionid: str) -> dict:
+def complete_question(request: HttpRequest, role: RequesterRole, game_id, questionid: str) -> dict:
     result = {}
     try:
         question: RealQuestion = RealQuestion.objects.get(unid=questionid)
@@ -90,7 +91,7 @@ def complete_question(request: HttpRequest, role: RequesterRole, questionid: str
     return result
 
 
-def reveal_answer(request: HttpRequest, role: RequesterRole, answerid: str) -> dict:
+def reveal_answer(request: HttpRequest, role: RequesterRole, game_id, answerid: str) -> dict:
     result = {}
     try:
         answer = RealAnswer.objects.get(unid=answerid)
@@ -110,8 +111,14 @@ def create_question_handler(request: HttpRequest) -> dict:
     try:
         body: dict = json.loads(request.body.decode('utf-8'))
         return create_question_from_json(body)
+    except ValidationException as e:
+        return {
+            'status': 403,
+            'error': e.create_message(),
+            'error_fields': e.fields_error_json()
+        }
     except Exception as e:
-        logging.error(e.with_traceback())
+        logging.error(e)
     return {
         'status': 403,
         'error': 'Could not create the question'
@@ -122,11 +129,11 @@ def create_question_from_json(question_json:dict)->dict:
     result = QuestionData.from_json(question_json)
     if result is None:
         return {
-            'status': 401,
+            'status': 403,
             'error': 'Could not create the question',
-            'body': question_json
+            'body': question_json,
         }
     return {
         'status':200,
-        'question': result.json(RequesterRole.HOST)
+        'data': result.json(RequesterRole.HOST)
     }

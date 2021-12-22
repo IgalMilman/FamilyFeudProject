@@ -7,7 +7,9 @@ export function AutoScaleMaterialColumn(props: any): JSX.Element {
         direction="column"
         item
         xs
+        className="ffcol"
         alignItems="center"
         justifyContent="center"
-        {...props} />
+        {...props}
+    />
 }

@@ -3,7 +3,9 @@ import json
 import logging
 import pytz
 from django.http.request import HttpRequest
-from funquizgame.data_getters.common_types import GAME_STATUSES
+from funquizgame.common.common_types import GAME_STATUSES
+from funquizgame.common.common_functions import is_blank
+from funquizgame.models.access_code import AccessCode
 
 from funquizgame.models.game import Game
 from funquizgame.models.real_answer import RealAnswer
@@ -14,16 +16,26 @@ from funquizgame.models.question_data import QuestionData
 
 def create_game(request: HttpRequest, role: str) -> dict:
     try:
-        game = Game.objects.create()
+        body = json.loads(request.body.decode('utf-8'))
+        game_name = body.get('title', None)
+        if  is_blank(game_name):
+            return {
+                'status': 400,
+                'error': 'You must provide a title for the game'
+            }
+        game:Game = Game.objects.create(title=game_name)
         Team.objects.get_or_create(game=game, number=1)
         Team.objects.get_or_create(game=game, number=2)
-        result = game.json(role)
-        result['status'] = 200
+        AccessCode.get_or_create_codes_for_game(game)
+        result = {
+            'data': game.json_short(role),
+            'status': 200
+        }
         return result
     except Exception as e:
         logging.error(e)
     return {
-        'status': 401,
+        'status': 400,
         'error': 'There was an internal error'
     }
 
@@ -44,7 +56,6 @@ def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict
     result = {}
     try:
         body = json.loads(request.body.decode('utf-8'))
-        result
         if "action" not in body:
             result['status'] = 401
             result['error'] = 'Action is not presented in the request'
@@ -66,7 +77,6 @@ def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict
     except Exception as e:
         logging.error(e)
         logging.error(request.body)
-
     return result
 
 
@@ -95,7 +105,7 @@ def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
                 real_question.save()
                 RealAnswer.create_real_answers(real_question, question)
             game.current_question = real_question.unid
-            game.status = GAME_STATUSES.QUESTION
+            game.status = GAME_STATUSES.QUESTION.value
             game.save()
             result['status'] = 200
             result['question'] = real_question.json(role)
@@ -114,17 +124,19 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
         result['error'] = 'Status was not provided'
         result['body'] = body
         return False
-    status = body['status']
-    if status not in GAME_STATUSES.VALID_VALUES:
+    if not GAME_STATUSES.has_value(body['status']):
         result['status'] = 401
-        result['error'] = f'Status {status} is not valid'
+        result['error'] = f'Status {body["status"]} is not valid'
         result['body'] = body
         return False
+    status = GAME_STATUSES(body['status'])
     if status == GAME_STATUSES.QUESTION:
         result['status'] = 401
         result['error'] = 'You cannot set the status of the game to question'
+    if status == GAME_STATUSES.ENDING:
+        AccessCode.close_access_codes(game)
     try:
-        game.status = status
+        game.status = status.value
         game.current_question = None
         game.save()
         result['status'] = 200
@@ -137,33 +149,33 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
     return False
 
 
-def set_team_name(request: HttpRequest, team_number: int, role: str) -> dict:
+def set_team_name(request: HttpRequest, role: str, game_id, team_number: int) -> dict:
     result = {}
     try:
         body = json.loads(request.body.decode('utf-8'))
-        if 'name' not in body or 'game_id' not in body:
-            result['status'] = 401
+        if 'name' not in body:
+            result['status'] = 400
             result['error'] = 'Action is not presented in the request'
             result['body'] = body
             return result
         name = body['name']
-        gameid = body['game_id']
-        game: Game = Game.objects.get(unid=gameid)
+        game: Game = Game.objects.get(unid=game_id)
         if game is None:
             result['status'] = 404
+            result['error'] = 'Game not found'
             return result
         team: Team = game.team_set.filter(number=team_number).first()
         if team is not None:
             team.name = name
             team.save()
             return {
-                'game': game.json(role),
+                'data': team.json(role),
                 'status': 200
             }
         result['body'] = body
     except Exception as e:
         logging.error(e)
         logging.error(request.body)
-    result['status'] = 403
+    result['status'] = 400
     result['error'] = 'Could not set the team name'
     return result

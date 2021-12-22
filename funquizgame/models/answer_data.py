@@ -1,19 +1,9 @@
 import logging
-import uuid
-import json
-from datetime import datetime, timedelta, timezone
-from urllib.parse import quote, unquote
 from django.db.models.deletion import CASCADE
 
-import pytz
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.files.storage import DefaultStorage
 from django.db import models
-from django.urls import reverse
-import funquizgame
-from funquizgame.data_getters.common_types import RequesterRole
-from funquizgame.models.game import Game
+from funquizgame.common.common_exceptions import ValidationExceptionBuilder
+from funquizgame.common.common_types import RequesterRole
 from funquizgame.models.multi_language_item import MultiLanguageField
 from funquizgame.models.question_data import QuestionData
 
@@ -28,13 +18,13 @@ class AnswerData(MultiLanguageField):
         QuestionData, on_delete=CASCADE, null=False, db_index=True)
 
     def get_answer(self, role: RequesterRole) -> dict:
-        if role == RequesterRole.PARTICIPANT:
+        if role.is_participant():
             return None
         else:
             return self
 
     def json(self, role: RequesterRole) -> dict:
-        if role == RequesterRole.PARTICIPANT:
+        if role.is_participant():
             return None
         else:
             result = super().json()
@@ -49,8 +39,15 @@ class AnswerData(MultiLanguageField):
         value = json.get('correct_value', None)
         people = json.get('people_answered', None)
         points = json.get('points_value', None)
-        if (textlist is None or not isinstance(textlist, list)) and value is None:
-            return None
+        if (textlist is None or not isinstance(textlist, list)) and value is None or points is None or people is None:
+            builder = ValidationExceptionBuilder()
+            if (textlist is None or not isinstance(textlist, list)) and value is None:
+                builder.add_empty_value_error('text').add_empty_value_error('correct_value')
+            if points is None:
+                builder.add_empty_value_error('points_value')
+            if people is None:
+                builder.add_empty_value_error('people_answered')
+            raise builder.build()
         try:
             answer:AnswerData = AnswerData.objects.create(question=question, correct_value=value, people_answered=people, points_value=points)
             if textlist is not None and len(textlist) > 0:
@@ -60,5 +57,5 @@ class AnswerData(MultiLanguageField):
                     return None
             return answer
         except Exception as e:
-            logging.error(e.with_traceback())
+            logging.error(e)
         return None

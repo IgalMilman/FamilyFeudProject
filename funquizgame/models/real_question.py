@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import DefaultStorage
 from django.db import models
 from django.urls import reverse
-from funquizgame.data_getters.common_types import RequesterRole
+from funquizgame.common.common_types import RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.team import Team
 from funquizgame.models.question_data import QuestionData
@@ -35,7 +35,7 @@ class RealQuestion(RealDataAbstract):
         return list(filter(lambda x: x is not None, result))
     
     def get_question_data(self, role: RequesterRole) -> dict:
-        if self.is_shown or role == RequesterRole.HOST:
+        if self.is_shown or role.is_host():
             return self.question_data.json(role)
         return None
     

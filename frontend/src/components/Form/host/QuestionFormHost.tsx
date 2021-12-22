@@ -28,16 +28,16 @@ export function QuestionFormHost(props: QuestionProps): JSX.Element {
         }
     }
     const assignQuestion = (teamnumber:1|2) => {
-        ApiClient.getClient(undefined).revealQuestion(props.question?.id);
+        ApiClient.getClient().revealQuestion(props.question?.id);
     }
     const revealQuestionAction = () => {
-        ApiClient.getClient(undefined).revealQuestion(props.question?.id);
+        ApiClient.getClient().revealQuestion(props.question?.id);
     }
     const closeQuestionAction = () => {
-        ApiClient.getClient(undefined).completeQuestion(props.question?.id);
+        ApiClient.getClient().completeQuestion(props.question?.id);
     }
     return (
-        <>
+        <AutoScaleMaterialColumn spacing={1}>
             <AutoScaleMaterialRow>
                 <AutoScaleMaterialColumn>
                         <SubmitButton
@@ -74,6 +74,6 @@ export function QuestionFormHost(props: QuestionProps): JSX.Element {
                 </AutoScaleMaterialColumn>
             </AutoScaleMaterialRow>
             {formItem}
-        </>
+        </AutoScaleMaterialColumn>
     )
 }

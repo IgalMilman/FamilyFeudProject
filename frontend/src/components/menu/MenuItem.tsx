@@ -24,8 +24,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     }
     return (
         <StyledMaterialMenuItem selected={props.selected} onClick={onClick} >
-            {props.data.icon}
-            {props.data.name}
+            {props.data?.icon}
+            {props.data?.name}
         </StyledMaterialMenuItem>
     )
 }

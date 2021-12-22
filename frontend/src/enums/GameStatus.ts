@@ -1,4 +1,5 @@
 export enum GameStatus {
+    UNDEFINED = 'un',
     BEGINNING = 'beg',
     SETTING_TEAMS = 'st',
     DASHBOARD = 'dash',

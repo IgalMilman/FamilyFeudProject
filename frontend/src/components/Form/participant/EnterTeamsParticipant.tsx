@@ -1,10 +1,13 @@
 import { TextField } from '@mui/material';
 import * as React from 'react';
 import { ApiClient } from '../../../apiclient/ApiClient';
+import { APIResponse } from '../../../apiclient/models/APIResponse';
+import { Team } from '../../../apiclient/models/Team';
 import { TeamNameChangeRequest } from '../../../apiclient/models/TeamNameChange';
 import SubmitButtonType from '../../../enums/SubmitButtonType';
 import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow';
+import { MessageArea, MessageAreaProps } from '../../common/MessageArea';
 import { SubmitButton } from '../../common/QuestionSubmitButton';
 
 interface EnterTeamsNamePatricipantProps {
@@ -14,6 +17,7 @@ interface EnterTeamsNamePatricipantProps {
 
 export function EnterTeamsNamePatricipant(props: EnterTeamsNamePatricipantProps): JSX.Element {
     const [value, valueChange] = React.useState<string>(props.teamName ? props.teamName : "");
+    const [message, changeMessage] = React.useState<MessageAreaProps>(null);
     function onValueChange(event: { target: { value: string; }; }) {
         valueChange(event?.target?.value ? event.target.value : "");
     }
@@ -21,6 +25,7 @@ export function EnterTeamsNamePatricipant(props: EnterTeamsNamePatricipantProps)
     return (
         <AutoScaleMaterialRow>
             <AutoScaleMaterialColumn>
+                <MessageArea {...message} />
                 <AutoScaleMaterialRow>
                     <TextField
                         type="text"
@@ -32,7 +37,15 @@ export function EnterTeamsNamePatricipant(props: EnterTeamsNamePatricipantProps)
                     <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={!value} onClick={() => {
                         const request: TeamNameChangeRequest = new TeamNameChangeRequest();
                         request.name = value;
-                        ApiClient.getClient(undefined).changeTeamName(request, props.teamNumber)
+                        ApiClient.getClient().changeTeamName(request, props.teamNumber).then((response: APIResponse<Team>) => {
+                            if (response.status == 200) {
+                                changeMessage({ type: 'success', text: 'Team name saved!' });
+                            }
+                            else {
+                                changeMessage({ type: 'error', text: 'Encountered an error while saving the tema name' });
+                            }
+                        }
+                        )
                     }} />
                 </AutoScaleMaterialRow>
             </AutoScaleMaterialColumn>

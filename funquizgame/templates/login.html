@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load render_bundle from webpack_loader %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <title>Family Feud</title>
+  {% render_bundle 'frontend' 'css' %}
+</head>
+<body>
+  <login-form 
+  {% if errormessage %}errormessage={{errormessage}}{% endif %}
+  {% if username %}currentusername={{username}}{% endif %}
+  {% if accesscode %}currentaccesscode={{accesscode}}{% endif %}
+  />
+  {% render_bundle 'frontend' 'js' %}
+</body>
+</html>

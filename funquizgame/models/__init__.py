@@ -7,3 +7,4 @@ from funquizgame.models.real_data_abstract import RealDataAbstract
 from funquizgame.models.real_question import QuestionData
 from funquizgame.models.team import Team
 from funquizgame.models.text_field import TextField
+from funquizgame.models.users.game_user import GameUser

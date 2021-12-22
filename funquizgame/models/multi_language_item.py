@@ -34,6 +34,6 @@ class MultiLanguageField(models.Model):
                     return None
                 result.append(text_object)
             except Exception as e:
-                logging.error(e.with_traceback())
+                logging.error(e)
                 return None
         return result

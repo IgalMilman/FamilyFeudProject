@@ -1,15 +1,10 @@
 import uuid
-from datetime import datetime, timedelta, timezone
-from urllib.parse import quote, unquote
 
-import pytz
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.files.storage import DefaultStorage
 from django.db import models
-from django.urls import reverse
-from funquizgame.data_getters.common_types import RequesterRole
+from funquizgame.common.common_types import RequesterRole
 from funquizgame.models.game import Game
+from funquizgame.models.access_code import AccessCode
+from funquizgame.models.users.game_user import GameUser
 
 class Team(models.Model):
     unid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
@@ -23,5 +18,14 @@ class Team(models.Model):
             "id": self.unid,
             "name": self.name,
             "number": self.number,
-            "points": self.points
+            "points": self.points,
+            "access_code": self.get_access_code(role)
         }
+
+    def get_access_code(self, role:RequesterRole)->str:
+        if not role.is_host():
+            return None
+        access_code:AccessCode = AccessCode.get_or_create_code_for_game_and_user(self.game, GameUser.get_participant_for_team(self.number))
+        if access_code is None:
+            return None
+        return access_code.access_code

@@ -5,6 +5,8 @@ import MaterialMenu from '@mui/material/Menu';
 import { MenuItem, MenuData } from './MenuItem'
 import AppMode from '../../enums/AppModes';
 import { BaseAppProps } from '../common/AppProps';
+import { ApiClient } from '../../apiclient/ApiClient';
+import { redirect } from '../../apiclient/CommonMethods';
 
 export interface MenuProps extends BaseAppProps {
     items: MenuData[];
@@ -42,11 +44,15 @@ export function Menu(props: MenuProps): JSX.Element {
             onClose={handleClose}
             onClick={handleClose}
         >
-                {props.items.map(
-                    (menuData, index) => (
-                        <MenuItem key={index.toString()} data={menuData} selected={menuData.mode === props.currentMode}
-                            onClick={handleItemClick} />
-                    )
-                )}</MaterialMenu>
+            {props.items.map(
+                (menuData, index) => (
+                    <MenuItem key={index.toString()} data={menuData} selected={menuData.mode === props.currentMode}
+                        onClick={handleItemClick} />
+                )
+            )}
+            <MenuItem selected={false} onClick={() => {
+                redirect('/logout');            
+            }} data={{ name: 'Logout', mode: AppMode.Login }} />
+        </MaterialMenu>
     </>)
 }

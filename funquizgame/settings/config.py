@@ -14,6 +14,8 @@ STATIC_FILES_VERSION = SOFTWARE_VERSION + '_1'
 PROGRAM_VERSION = SOFTWARE_VERSION
 USE_TZ = True
 TIME_ZONE = "America/New_York"
+ACCESS_CODE_LENGTH = 6
+
 MEDIA_ROOT = os.path.join(os.path.abspath("."), "media")
 TEMP_FOLDER = os.path.join(os.getcwd(), "temp")
 WIKI_FILES = os.path.join(os.path.abspath("."), "uploads", "wiki")

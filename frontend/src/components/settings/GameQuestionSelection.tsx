@@ -12,7 +12,7 @@ export function GameQuestionSelection(props: MainGameContentProps): JSX.Element 
     const [questionList, changeQuestionList] = React.useState<QuestionData[]>(null);
     React.useEffect(() => {
         if (props.game?.id) {
-            ApiClient.getClient(props.currentRole).getQuestionsList(props.game?.id).then(
+            ApiClient.getClient().getQuestionsList(props.game?.id).then(
                 (value: QuestionData[]) => {
                     changeQuestionList(value);
                 }
@@ -23,7 +23,7 @@ export function GameQuestionSelection(props: MainGameContentProps): JSX.Element 
         const action = new GameAction();
         action.action = 'next_question';
         action.questionid = question?.id;
-        ApiClient.getClient(undefined).performActionOnGame(props.game?.id, action);
+        ApiClient.getClient().performActionOnGame(props.game?.id, action);
     }
     return (
         <AutoScaleMaterialRow>

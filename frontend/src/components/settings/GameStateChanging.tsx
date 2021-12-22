@@ -35,7 +35,7 @@ export function GameStateChanging(props: MainGameContentProps): JSX.Element {
                     const action: GameAction = new GameAction();
                     action.action = 'set_status';
                     action.status = GameStatusFromString(selection);
-                    ApiClient.getClient(undefined).performActionOnGame(props.game?.id, action);
+                    ApiClient.getClient().performActionOnGame(props.game?.id, action);
                 }} />
             </AutoScaleMaterialColumn>
         </AutoScaleMaterialRow>

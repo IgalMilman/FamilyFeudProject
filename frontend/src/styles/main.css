@@ -1,0 +1,11 @@
+.mainview {
+  min-height: 90vh;
+  margin-top: 0px !important;
+}
+
+.team1background {
+  background-color: lightcoral;
+}
+.team2background {
+  background-color: lightgreen;
+}

@@ -87,6 +87,7 @@ FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 WSGI_APPLICATION = 'funquizgame.wsgi.application'
 
 LOGIN_REDIRECT_URL = '/'
+AUTH_USER_MODEL = 'funquizgame.GameUser'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -155,4 +156,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     join(dirname(BASE_DIR), 'staticoverride'),
     join(dirname(BASE_DIR), 'assets'),
+    join(BASE_DIR, 'assets'),
 )

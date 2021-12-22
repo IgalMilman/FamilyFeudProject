@@ -1,16 +1,10 @@
-import uuid
 import logging
-from datetime import datetime, timedelta, timezone
-from urllib.parse import quote, unquote
+import uuid
 
-import pytz
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.files.storage import DefaultStorage
-from django.db import models
 from django.urls import reverse
-
-from funquizgame.data_getters.common_types import GAME_STATUSES, RequesterRole
+from django.db import models
+from funquizgame.common.common_types import GAME_STATUSES, RequesterRole
+from funquizgame.models.users.game_user import GameUser
 
 
 class Game(models.Model):
@@ -23,9 +17,10 @@ class Game(models.Model):
     ended_on = models.DateTimeField(
         "Ending time", auto_now_add=False, null=True, blank=True)
     status = models.TextField(
-        "Current game status", choices=GAME_STATUSES.CHOICES, null=False, blank=False, default=GAME_STATUSES.BEGINNING)
+        "Current game status", choices=GAME_STATUSES.get_valid_choices(), null=False, blank=False, default=GAME_STATUSES.BEGINNING.value)
     current_question = models.UUIDField(
         "Current question", editable=True, unique=False, null=True, blank=True)
+    title = models.CharField('Game Title', max_length=60)
 
     def get_teams(self, role: RequesterRole) -> dict:
         result = []
@@ -40,13 +35,35 @@ class Game(models.Model):
             'status': self.status,
             'current_question': self.current_question,
             'teams': self.get_teams(role),
-            'active_question': self.get_active_question(role)
+            'active_question': self.get_active_question(role),
+            'title': self.title,
+            'viewer_access_code': self.get_access_code_for_viewer()
         }
+
+    def json_short(self, role: RequesterRole) -> dict:
+        if not role.is_host():
+            return None
+        return {
+            'id': self.unid,
+            'gameStatus': self.status,
+            'url': reverse('active_game', args=[self.unid]),
+            'title': self.title
+
+        }
+
+    def get_access_code_for_viewer(self) -> str:
+        from funquizgame.models.access_code import AccessCode
+        access_code: AccessCode = AccessCode.get_or_create_code_for_game_and_user(
+            self, GameUser.get_viewer_user())
+        if access_code is None:
+            return None
+        return access_code.access_code
 
     def get_active_question(self, role: RequesterRole) -> dict:
         try:
             from funquizgame.models.real_question import RealQuestion
-            question = RealQuestion.objects.filter(unid=self.current_question).first()
+            question = RealQuestion.objects.filter(
+                unid=self.current_question).first()
             return None if question is None else question.json(role)
         except Exception as e:
             logging.error(e)

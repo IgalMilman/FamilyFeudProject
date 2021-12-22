@@ -19,7 +19,7 @@ export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element 
         answer.answerid = props.answer?.answerdata?.id;
         answer.teamnumber = teamnumber;
         answer.reveal = true;
-        ApiClient.getClient(undefined).submitAnswer(props.questionid, answer).then(
+        ApiClient.getClient().submitAnswer(props.questionid, answer).then(
             (value: Answer) => {
             }
         )
@@ -33,7 +33,7 @@ export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element 
                 <AutoScaleMaterialColumn>
                     <SubmitButton type={SubmitButtonType.SubmitAnswer} text="Reveal answer" disabled={false} onClick={() => {
 
-                        ApiClient.getClient(undefined).revealAnswer(props.answer?.id).then(
+                        ApiClient.getClient().revealAnswer(props.answer?.id).then(
                             (value: Answer) => {
                             }
                         )

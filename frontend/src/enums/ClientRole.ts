@@ -1,7 +1,8 @@
 export enum ClientRole {
     Host='ht',
     Viewer='vr',
-    Participant='pt'
+    Participant='pt',
+    Undefined='un'
 }
 
 export function ClientRoleFromString(input?: string): ClientRole {

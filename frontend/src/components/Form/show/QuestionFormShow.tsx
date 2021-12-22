@@ -6,6 +6,7 @@ import { FamilyFeudQuestionShow } from './FamilyFeudQuestionShow';
 import { NumberEnterQuestionShow } from './NumberEnterQuestionShow';
 import { QuestionProps } from '../common/QuestionProps';
 import { ButtonQuestionShow } from './ButtonQuestionShow';
+import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 
 export function QuestionFormShow(props: QuestionProps): JSX.Element {
     const questionType = QuestionTypeFromNumber(props.question?.question_data?.qtype);
@@ -25,11 +26,11 @@ export function QuestionFormShow(props: QuestionProps): JSX.Element {
         }
     }
     return (
-        <>
+        <AutoScaleMaterialColumn spacing={1}>
             <QuestionDisplay
                 question={props.question}
             />
             {formItem}
-        </>
+        </AutoScaleMaterialColumn>
     )
 }

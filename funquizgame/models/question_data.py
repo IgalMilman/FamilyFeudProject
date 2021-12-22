@@ -9,18 +9,19 @@ from django.contrib.auth.models import User
 from django.core.files.storage import DefaultStorage
 from django.db import models
 from django.urls import reverse
-from funquizgame.data_getters.common_types import QuestionTypes, RequesterRole
+from funquizgame.common.common_exceptions import ValidationException
+from funquizgame.common.common_types import QuestionTypes, RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.multi_language_item import MultiLanguageField
 
 
 class QuestionData(MultiLanguageField):
     question_type = models.SmallIntegerField(
-        "Question type*", choices=QuestionTypes.CHOICES)
+        "Question type*", choices=QuestionTypes.get_valid_choices())
 
     def answers_json(self, role: RequesterRole) -> list:
         result = []
-        if role != RequesterRole.PARTICIPANT:
+        if not role.is_participant():
             for answer in self.answerdata_set.all().order_by('-points_value'):
                 result.append(answer.json(role))
         return list(filter(lambda x: x is not None, result))
@@ -48,7 +49,7 @@ class QuestionData(MultiLanguageField):
         return result
 
     @staticmethod
-    def from_json(data: dict):
+    def from_json(data: dict) -> 'QuestionData':
         question_type = data.get('qtype', None)
         answers = data.get('answers', None)
         text = data.get('text', None)
@@ -56,20 +57,16 @@ class QuestionData(MultiLanguageField):
             answers is None or not isinstance(answers, list) or len(answers) == 0 or \
             text is None or not isinstance(text, list) or len(text) == 0:
             return None
-        try:
-            question:QuestionData = QuestionData.objects.create(question_type=question_type)
-            text_objects = question.create_text(text)
-            if text_objects is None: 
+        question:QuestionData = QuestionData.objects.create(question_type=question_type)
+        text_objects = question.create_text(text)
+        if text_objects is None: 
+            question.delete()
+            return None
+        from funquizgame.models.answer_data import AnswerData
+        for answer in answers:
+            answer_object: AnswerData=AnswerData.from_json(answer, question)
+            if answer_object is None:
                 question.delete()
                 return None
-            from funquizgame.models.answer_data import AnswerData
-            for answer in answers:
-                answer_object: AnswerData=AnswerData.from_json(answer, question)
-                if answer_object is None:
-                    question.delete()
-                    return None
-            return question
-        except Exception as e:
-            logging.error(e.with_traceback())
-        return None
+        return question
 

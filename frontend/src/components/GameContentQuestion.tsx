@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { QuestionFormParticipant } from './Form/participant/QuestionFormParticipant';
-import { QuestionFormHost } from './Form/host/QuestionFormHost';
-import { QuestionFormShow } from './Form/show/QuestionFormShow';
+import { QuestionFormParticipant } from './form/participant/QuestionFormParticipant';
+import { QuestionFormHost } from './form/host/QuestionFormHost';
+import { QuestionFormShow } from './form/show/QuestionFormShow';
 import { Question } from '../apiclient/models/Question';
 import { ClientRole } from '../enums/ClientRole';
 import { MainGameContentProps } from './common/MainGameContentProps';
 import { GameStatus } from '../enums/GameStatus';
-import { EnterTeamsNamePatricipant } from './Form/participant/EnterTeamsParticipant';
+import { EnterTeamsNamePatricipant } from './form/participant/EnterTeamsParticipant';
 import { getTeam } from './common/Utils';
 
 export function GameContentQuestion(props: MainGameContentProps): JSX.Element {

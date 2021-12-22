@@ -4,13 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width" />
-  <title>My Site</title>
-  <script>window.role = "{{role}}";
-  window.teamnumber = {% if teamnumber %}
-   {{teamnumber}}
-{% else %}
-undefined
-{% endif %};</script>
+  <title>Family Feud</title>
   <style>
   .team1background{
     background-color: lightcoral;
@@ -19,10 +13,14 @@ undefined
     background-color: lightgreen;
   }
   </style>
+  {% render_bundle 'frontend' 'css' %}
 </head>
 <body>
-  <div id="app"></div>
-  {% render_bundle 'frontend' %}
-  <app></app>
+  <game-content 
+  role = '{{role}}' 
+  {% if teamnumber %}team = {{teamnumber}}{% endif %} 
+  {% if gameid %}gameid = '{{gameid}}'{% endif %}
+  />
+  {% render_bundle 'frontend' 'js' %}
 </body>
 </html>

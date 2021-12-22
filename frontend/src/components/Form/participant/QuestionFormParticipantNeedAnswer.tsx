@@ -10,6 +10,7 @@ import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow';
 import { ApiClient } from '../../../apiclient/ApiClient';
 import { GiveAnswer } from '../../../apiclient/models/GiveAnswer';
 import { QuestionPropsParticipant } from './QuestionPropsParticipant';
+import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 
 export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipant): JSX.Element {
     const questionType: QuestionType = QuestionTypeFromNumber(props.question?.question_data?.qtype)
@@ -39,7 +40,7 @@ export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipan
         }
     }
     return (
-        <>
+        <AutoScaleMaterialColumn>
             <QuestionDisplay
                 question={props.question}
             />
@@ -49,9 +50,9 @@ export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipan
                 let answer:GiveAnswer = new GiveAnswer();
                 answer.value = Number.parseInt(value);
                 answer.teamnumber = props.teamNumber;
-                ApiClient.getClient(undefined).submitAnswer(props.question?.id, answer)
+                ApiClient.getClient().submitAnswer(props.question?.id, answer)
             }} />}
             </AutoScaleMaterialRow>
-        </>
+        </AutoScaleMaterialColumn>
     )
 }
