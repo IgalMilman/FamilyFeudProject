@@ -5,7 +5,7 @@ import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn'
 
 export function FamilyFeudQuestion(props: QuestionProps): JSX.Element {
     return (
-        <AutoScaleMaterialColumn spacing={4}>
+        <AutoScaleMaterialColumn spacing={2}>
             {props.question?.real_answers?.map((answer, index) => <FamilyFeudAnswer key={index} answer={answer} />)}
         </AutoScaleMaterialColumn>
         )

@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 import logging
-import pytz
 from django.http.request import HttpRequest
 from funquizgame.common.common_types import GAME_STATUSES
 from funquizgame.common.common_functions import is_blank
@@ -101,7 +100,6 @@ def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
                 question_data=question, game=game, order=1)
             real_question = real_question_tuple[0]
             if real_question_tuple[1]:
-                real_question.question_start = datetime.now(pytz.utc)
                 real_question.save()
                 RealAnswer.create_real_answers(real_question, question)
             game.current_question = real_question.unid

@@ -5,4 +5,5 @@ export class QuestionData extends MultiLanguage {
   answers: AnswerData[];
   qtype: number;
   has_real: boolean;
+  is_complete: boolean;
 }

@@ -35,8 +35,10 @@ class RealQuestion(RealDataAbstract):
         return list(filter(lambda x: x is not None, result))
     
     def get_question_data(self, role: RequesterRole) -> dict:
-        if self.is_shown or role.is_host():
+        if role.is_host():
             return self.question_data.json(role)
+        if self.is_shown:
+            return self.question_data.json(RequesterRole.VIEWER if self.is_complete else RequesterRole.PARTICIPANT)
         return None
     
     def json(self, role: RequesterRole) -> dict:
@@ -46,7 +48,8 @@ class RealQuestion(RealDataAbstract):
             'is_complete': self.is_complete,
             'question_data': self.get_question_data(role),
             'order': self.order,
-            'start': self.question_start,
+            'start': self.question_start.timestamp() if self.question_start is not None else None,
+            'start_time': self.question_start,
             'real_answers': self.get_all_real_answers_json(role)
         }
         return result

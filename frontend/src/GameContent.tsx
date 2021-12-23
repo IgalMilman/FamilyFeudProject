@@ -82,7 +82,8 @@ export const GameContent = (props: { role: string, team: 1 | 2 | undefined, game
         game={game}
         currentRole={role}
         status={status}
-        teamNumber={props.team} />
+        teamNumber={props.team}
+        changeAppMode={changeMode} />
     </>
   )
 }

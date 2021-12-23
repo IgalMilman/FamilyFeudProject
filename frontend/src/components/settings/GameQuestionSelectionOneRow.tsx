@@ -12,14 +12,17 @@ interface GameQuestionSelectionOneRowProps {
 }
 
 export function GameQuestionSelectionOneRow(props: GameQuestionSelectionOneRowProps): JSX.Element {
+    const className: string = props.question?.is_complete ? 'bordered line-through'
+        : (props.question?.has_real ? 'bordered line-under' : 'bordered');
     return (
-        <AutoScaleMaterialRow style={{ textDecoration : props.question?.has_real ? 'line-through' : 'none' }}>
+        <AutoScaleMaterialRow className={className}>
             <AutoScaleMaterialColumn justifyContent="flex-end" alignItems="flex-end">
                 <AllLanguageOutput text={props.question?.text} />
             </AutoScaleMaterialColumn>
             <AutoScaleMaterialColumn justifyContent="flex-start" alignItems="flex-start">
                 <SubmitButton
                     type={SubmitButtonType.SubmitAnswer}
+                    text='Select question'
                     disabled={false}
                     onClick={() => props.questionSelectionAction(props.question)} />
             </AutoScaleMaterialColumn>

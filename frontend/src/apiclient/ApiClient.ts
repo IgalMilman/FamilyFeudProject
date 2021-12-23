@@ -282,7 +282,6 @@ export class ApiClient {
   }
 
   private generateUrl(urlname: string, id: string = ""): string {
-    console.log(this.gameId);
     const result = this.urlMap[urlname](this.gameId, id);
     return result;
   }

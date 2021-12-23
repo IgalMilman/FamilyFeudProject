@@ -25,7 +25,7 @@ class AnswerData(MultiLanguageField):
 
     def json(self, role: RequesterRole) -> dict:
         if role.is_participant():
-            return None
+            return super().json()
         else:
             result = super().json()
             result['points_value'] = self.points_value

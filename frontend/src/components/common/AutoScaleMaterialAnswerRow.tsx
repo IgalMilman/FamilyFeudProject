@@ -9,6 +9,5 @@ export function AutoScaleMaterialAnswerRow(props: any): JSX.Element {
         xs
         alignItems="center"
         justifyContent="center"
-        className="team1background"
         {...props} />
 }

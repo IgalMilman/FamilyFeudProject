@@ -14,7 +14,6 @@ from funquizgame.common.common_types import QuestionTypes, RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.multi_language_item import MultiLanguageField
 
-
 class QuestionData(MultiLanguageField):
     question_type = models.SmallIntegerField(
         "Question type*", choices=QuestionTypes.get_valid_choices())
@@ -36,16 +35,18 @@ class QuestionData(MultiLanguageField):
         result["qtype"] = self.question_type
         return result
 
-    def has_real_question(self, game: Game) -> bool:
+    def get_real_question(self, game: Game) -> object:
         try:
-            return self.realquestion_set.filter(game=game.unid).exists()
+            return self.realquestion_set.filter(game=game.unid).first()
         except Exception as e:
             logging.error(e)
-        return False
+        return None
 
     def json_short_duplication_check(self, role: RequesterRole, game: Game) -> dict:
         result = self.json_short(role)
-        result["has_real"] = self.has_real_question(game)
+        real_question = self.get_real_question(game)
+        result["has_real"] = real_question is not None
+        result["is_complete"] = False if real_question is None else real_question.is_complete
         return result
 
     @staticmethod

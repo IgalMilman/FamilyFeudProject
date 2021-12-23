@@ -8,4 +8,5 @@ export class Answer {
   answerdata: AnswerData;
   value: number;
   add_points: number;
+  created: number;
 }

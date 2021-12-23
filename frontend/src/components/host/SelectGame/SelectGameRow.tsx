@@ -9,7 +9,7 @@ interface SelectGameRowProps {
 }
 
 export const SelectGameRow = (props: SelectGameRowProps): JSX.Element => {
-    return <AutoScaleMaterialRow>
+    return <AutoScaleMaterialRow className='bordered'>
         <AutoScaleMaterialColumn>{props.gameDescription?.title}</AutoScaleMaterialColumn>
         <AutoScaleMaterialColumn>{props.gameDescription?.gameStatus}</AutoScaleMaterialColumn>
         <AutoScaleMaterialColumn><Link href={props.gameDescription?.url}>Open game</Link></AutoScaleMaterialColumn>

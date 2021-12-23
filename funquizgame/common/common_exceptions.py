@@ -46,7 +46,7 @@ class ValidationExceptionBuilder:
             errormessage = f'value should be in between {min} and {max}'
         elif min is not None:
             errormessage = f'value should be greater than {min}'
-        elif min is not None:
+        elif max is not None:
             errormessage = f'value should be less than {max}'
         else:
             errormessage = 'value should be a valid number'

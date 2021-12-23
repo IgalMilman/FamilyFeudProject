@@ -8,4 +8,5 @@ export class Question {
   question_data: QuestionData;
   order: number;
   real_answers: Answer[];
+  start: number;
 }

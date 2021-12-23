@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 
 import pytz
-from django.core import serializers
 from django.http.request import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from funquizgame.common.common_exceptions import ValidationException
@@ -48,6 +47,8 @@ def give_answer(request: HttpRequest, role: RequesterRole, game_id, questionid: 
         real_answer.team = team
         if reveal:
             real_answer.is_shown = True
+        if real_answer.answer_created is None:
+            real_answer.answer_created = datetime.now(pytz.utc)
         real_answer.save()
         result['status'] = 200
         result['answer'] = real_answer.json(role)
@@ -60,7 +61,10 @@ def reveal_question(request: HttpRequest, role: RequesterRole, game_id, question
     result = {}
     try:
         question = RealQuestion.objects.get(unid=questionid)
+        if question.question_start is None:
+            question.question_start = datetime.now(pytz.utc)
         question.is_shown = True
+
         question.save()
         result['status'] = 200
         result['question'] = question.json(role)
@@ -94,8 +98,13 @@ def complete_question(request: HttpRequest, role: RequesterRole, game_id, questi
 def reveal_answer(request: HttpRequest, role: RequesterRole, game_id, answerid: str) -> dict:
     result = {}
     try:
-        answer = RealAnswer.objects.get(unid=answerid)
+        answer:RealAnswer = RealAnswer.objects.get(unid=answerid)
         answer.is_shown = True
+        if answer.team is not None:
+            previous_team: Team = answer.team
+            previous_team.points = previous_team.points - answer.additional_points - answer.answer_data.points_value
+            previous_team.save()
+            answer.team = None
         answer.save()
         result['status'] = 200
         result['answer'] = answer.json(role)

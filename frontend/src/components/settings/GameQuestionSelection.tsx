@@ -2,6 +2,7 @@ import * as React from 'react'
 import { ApiClient } from '../../apiclient/ApiClient';
 import { GameAction } from '../../apiclient/models/GameAction';
 import { QuestionData } from '../../apiclient/models/QuestionData';
+import AppMode from '../../enums/AppModes';
 import { AutoScaleMaterialColumn } from '../common/AutoScaleMaterialColumn';
 import { AutoScaleMaterialRow } from '../common/AutoScaleMaterialRow';
 import { MainGameContentProps } from '../common/MainGameContentProps';
@@ -23,7 +24,11 @@ export function GameQuestionSelection(props: MainGameContentProps): JSX.Element 
         const action = new GameAction();
         action.action = 'next_question';
         action.questionid = question?.id;
-        ApiClient.getClient().performActionOnGame(props.game?.id, action);
+        ApiClient.getClient().performActionOnGame(props.game?.id, action).then((value=>{
+            if (value && props.changeAppMode) {
+                props.changeAppMode(AppMode.QuestionMode);
+            }
+        }));
     }
     return (
         <AutoScaleMaterialRow>

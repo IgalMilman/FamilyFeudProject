@@ -9,3 +9,17 @@
 .team2background {
   background-color: lightgreen;
 }
+
+.bordered {
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.line-through {
+  text-decoration: line-through;
+}
+
+.line-under {
+  text-decoration: underline;
+}

@@ -25,7 +25,7 @@ export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element 
         )
     }
     return (
-        <AutoScaleMaterialRow>
+        <AutoScaleMaterialRow className='bordered'>
             <AutoScaleMaterialColumn>
                 <SubmitButton type={SubmitButtonType.SubmitAnswer} text="Give to left team" disabled={false} onClick={() => giveToTeam(1)} />
             </AutoScaleMaterialColumn>
