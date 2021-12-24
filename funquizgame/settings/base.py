@@ -155,5 +155,4 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     join(dirname(BASE_DIR), 'assets'),
-    join(BASE_DIR, 'assets'),
 )
