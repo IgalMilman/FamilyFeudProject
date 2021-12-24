@@ -154,7 +154,6 @@ AUTO_LOGOUT_DELAY = 360
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    join(dirname(BASE_DIR), 'staticoverride'),
     join(dirname(BASE_DIR), 'assets'),
     join(BASE_DIR, 'assets'),
 )
