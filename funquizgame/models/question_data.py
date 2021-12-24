@@ -1,22 +1,15 @@
-import json
 import logging
-from datetime import datetime, timedelta, timezone
-from urllib.parse import quote, unquote
-
-import pytz
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.files.storage import DefaultStorage
 from django.db import models
-from django.urls import reverse
-from funquizgame.common.common_exceptions import ValidationException
+from django.db.models.deletion import CASCADE
 from funquizgame.common.common_types import QuestionTypes, RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.multi_language_item import MultiLanguageField
+from funquizgame.models.users.game_user import GameUser
 
 class QuestionData(MultiLanguageField):
     question_type = models.SmallIntegerField(
         "Question type*", choices=QuestionTypes.get_valid_choices())
+    created_by = models.ForeignKey(GameUser, null=True, blank=False, on_delete=CASCADE)
 
     def answers_json(self, role: RequesterRole) -> list:
         result = []
@@ -50,7 +43,7 @@ class QuestionData(MultiLanguageField):
         return result
 
     @staticmethod
-    def from_json(data: dict) -> 'QuestionData':
+    def from_json(data: dict, user:GameUser) -> 'QuestionData':
         question_type = data.get('qtype', None)
         answers = data.get('answers', None)
         text = data.get('text', None)
@@ -58,7 +51,7 @@ class QuestionData(MultiLanguageField):
             answers is None or not isinstance(answers, list) or len(answers) == 0 or \
             text is None or not isinstance(text, list) or len(text) == 0:
             return None
-        question:QuestionData = QuestionData.objects.create(question_type=question_type)
+        question:QuestionData = QuestionData.objects.create(question_type=question_type, created_by=user)
         text_objects = question.create_text(text)
         if text_objects is None: 
             question.delete()

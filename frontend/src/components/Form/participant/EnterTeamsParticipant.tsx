@@ -34,7 +34,7 @@ export function EnterTeamsNamePatricipant(props: EnterTeamsNamePatricipantProps)
                     />
                 </AutoScaleMaterialRow>
                 <AutoScaleMaterialRow>
-                    <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={!value} onClick={() => {
+                    <SubmitButton text="Save team name" type={SubmitButtonType.SubmitAnswer} disabled={!value} onClick={() => {
                         const request: TeamNameChangeRequest = new TeamNameChangeRequest();
                         request.name = value;
                         ApiClient.getClient().changeTeamName(request, props.teamNumber).then((response: APIResponse<Team>) => {

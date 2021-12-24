@@ -1,11 +1,15 @@
 import logging
 
+from django.db.models.query_utils import Q
+
 from funquizgame.common.common_types import RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.question_data import QuestionData
 from funquizgame.models.real_question import RealQuestion
 
 from typing import List
+
+from funquizgame.models.users.game_user import GameUser
 
 
 def get_real_question(role: RequesterRole, game_id, question_id: str) -> dict:
@@ -28,13 +32,13 @@ def get_question_data(role: RequesterRole, game_id, question_id: str) -> dict:
     return {}
 
 
-def get_all_questions(role: RequesterRole, game_id: str) -> list:
+def get_all_questions(role: RequesterRole, user:GameUser, game_id: str) -> list:
     if not role.is_host():
         return []
     result = []
     try:
         game: Game = Game.objects.get(unid=game_id)
-        questions: List[QuestionData] = QuestionData.objects.all()
+        questions: List[QuestionData] = QuestionData.objects.filter(Q(created_by=user) | Q(created_by=None))
         if questions is not None:
             for question in questions:
                 result.append(
@@ -44,14 +48,14 @@ def get_all_questions(role: RequesterRole, game_id: str) -> list:
     return result
 
 
-def get_all_questions_of_type(role: RequesterRole, game_id: str, questiontype: int) -> list:
+def get_all_questions_of_type(role: RequesterRole, user:GameUser, game_id: str, questiontype: int) -> list:
     if not role.is_host():
         return []
     result = []
     try:
         game: Game = Game.objects.get(unid=game_id)
         questions: List[QuestionData] = QuestionData.objects.filter(
-            question_type=questiontype)
+            question_type=questiontype).filter(Q(created_by=user) | Q(created_by=None))
         if questions is not None:
             for question in questions:
                 result.append(

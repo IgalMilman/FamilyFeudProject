@@ -25,7 +25,15 @@ export const OneAnswerInputElement = (props: OneAnswerInputElementProps): JSX.El
         : <AnswerInputNumber title='Enter answer' setNumber={(value: number): void => {
             answer.correct_value = value;
         }} />
-    return <AutoScaleMaterialRow>
-        {input}
-    </AutoScaleMaterialRow>
+    return <>
+        <AutoScaleMaterialRow>
+            <AnswerInputNumber
+                title='Points worth'
+                setNumber={(value: number): void => {
+                    answer.points_value = value;
+                }} />
+        </AutoScaleMaterialRow>
+        <AutoScaleMaterialRow>
+            {input}
+        </AutoScaleMaterialRow></>
 }

@@ -1,12 +1,17 @@
 import * as React from 'react'
 import { QuestionProps } from './QuestionProps'
 import { FamilyFeudAnswer } from './FamilyFeudAnswer'
-import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn'
+import { Table, TableBody } from '@mui/material'
+import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow'
 
 export function FamilyFeudQuestion(props: QuestionProps): JSX.Element {
     return (
-        <AutoScaleMaterialColumn spacing={2}>
-            {props.question?.real_answers?.map((answer, index) => <FamilyFeudAnswer key={index} answer={answer} />)}
-        </AutoScaleMaterialColumn>
-        )
+        <AutoScaleMaterialRow>
+            <Table>
+                <TableBody>
+                    {props.question?.real_answers?.map((answer, index) => <FamilyFeudAnswer key={index} answer={answer} />)}
+                </TableBody>
+            </Table>
+        </AutoScaleMaterialRow>
+    )
 }

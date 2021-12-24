@@ -28,3 +28,7 @@ def login_user_user_name(request: HttpRequest) -> GameUser:
         login(request, user)
         return user
     return None
+
+def login_user_as_viewer(request: HttpRequest):
+    user: GameUser = GameUser.get_viewer_user()
+    login(request, user)

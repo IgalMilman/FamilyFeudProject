@@ -1,4 +1,3 @@
-from datetime import datetime
 import json
 import logging
 from django.http.request import HttpRequest
@@ -22,7 +21,7 @@ def create_game(request: HttpRequest, role: str) -> dict:
                 'status': 400,
                 'error': 'You must provide a title for the game'
             }
-        game:Game = Game.objects.create(title=game_name)
+        game:Game = Game.objects.create(title=game_name, created_by=request.user)
         Team.objects.get_or_create(game=game, number=1)
         Team.objects.get_or_create(game=game, number=2)
         AccessCode.get_or_create_codes_for_game(game)

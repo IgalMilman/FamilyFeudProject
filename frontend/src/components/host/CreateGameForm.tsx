@@ -1,4 +1,4 @@
-import { Alert, TextField } from '@mui/material';
+import { Alert, TextField, Typography } from '@mui/material';
 import * as React from 'react'
 import { ApiClient } from '../../apiclient/ApiClient';
 import { redirect } from '../../apiclient/CommonMethods';
@@ -18,14 +18,18 @@ export const CreateGameForm = (props: CreateGameFormProps): JSX.Element => {
 
     const [title, titleChange] = React.useState<string>('');
     const [error, setError] = React.useState<string>(null);
-    return <AutoScaleMaterialColumn>
+    return <AutoScaleMaterialColumn spacing={2}>
         {error && 
         <AutoScaleMaterialRow>
             <Alert severity="error">{error}</Alert>
         </AutoScaleMaterialRow>}
         <AutoScaleMaterialRow>
+            <Typography variant="h5">Create a new game</Typography>
+        </AutoScaleMaterialRow>
+        <AutoScaleMaterialRow>
             <TextField
                 type="text"
+                label="Game title"
                 onChange={(event: { target: { value: string; }; }): void => {
                     titleChange(event.target.value);
                 }}
@@ -33,7 +37,7 @@ export const CreateGameForm = (props: CreateGameFormProps): JSX.Element => {
             />
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>
-            <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={!title} onClick={() => {
+            <SubmitButton type={SubmitButtonType.SubmitAnswer} text="Create" disabled={!title} onClick={() => {
                 const request: CreateGameRequest = new CreateGameRequest();
                 request.title = title;
                 ApiClient.getClient().createGame(request).then((response: APIResponse<GameSelectionOption>) => {

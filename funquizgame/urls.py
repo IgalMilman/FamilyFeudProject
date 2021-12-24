@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path
 
 from funquizgame import error_views as error_views
-# from funquizgame import loginform as funquizgame_loginform
 from funquizgame import views as funquizgame_views
 
 urlpatterns = [
@@ -27,7 +26,6 @@ urlpatterns = [
     path('host-settings', funquizgame_views.host_settings, name='host_settings'),
     path('', funquizgame_views.homepage, name=''),
     path('', funquizgame_views.homepage, name='homepage'),
-    path('p<int:teamnumber>', funquizgame_views.homepage_participant, name='participant'),
     path('api/game/<uuid:gameid>/question/data/<uuid:questionid>', funquizgame_views.question_data_api, name='api_question_data'),
     path('api/game/<uuid:gameid>/question/<uuid:questionid>', funquizgame_views.question_api, name='api_question'),
     path('api/game/<uuid:gameid>/question/<uuid:questionid>/reveal', funquizgame_views.question_reveal_api, name='api_question_reveal'),

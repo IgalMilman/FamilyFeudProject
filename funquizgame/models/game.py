@@ -1,5 +1,6 @@
 import logging
 import uuid
+from django.db.models.deletion import SET_NULL
 
 from django.urls import reverse
 from django.db import models
@@ -10,6 +11,7 @@ from funquizgame.models.users.game_user import GameUser
 class Game(models.Model):
     unid = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    created_by = models.ForeignKey(GameUser, null=True, on_delete=SET_NULL)
     created_on = models.DateTimeField(
         "Created time", auto_now_add=True, null=False, blank=False)
     started_on = models.DateTimeField(

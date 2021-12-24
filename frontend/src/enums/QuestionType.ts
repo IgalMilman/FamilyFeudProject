@@ -15,3 +15,15 @@ export function QuestionTypeFromNumber(input?: number): QuestionType {
   }
   return null;
 }
+
+export function QuestionTextFromNumber(input?: number): string {
+  switch (input) {
+    case 1:
+      return "Number";
+    case 2:
+      return "Button";
+    case 3:
+      return "Fam Feud";
+  }
+  return null;
+}

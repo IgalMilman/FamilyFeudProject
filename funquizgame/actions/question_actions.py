@@ -12,6 +12,7 @@ from funquizgame.models.question_data import QuestionData
 from funquizgame.models.real_answer import RealAnswer
 from funquizgame.models.real_question import RealQuestion
 from funquizgame.models.team import Team
+from funquizgame.models.users.game_user import GameUser
 
 
 def give_answer(request: HttpRequest, role: RequesterRole, game_id, questionid: str) -> dict:
@@ -119,7 +120,7 @@ def reveal_answer(request: HttpRequest, role: RequesterRole, game_id, answerid: 
 def create_question_handler(request: HttpRequest) -> dict:
     try:
         body: dict = json.loads(request.body.decode('utf-8'))
-        return create_question_from_json(body)
+        return create_question_from_json(body, request.user)
     except ValidationException as e:
         return {
             'status': 403,
@@ -134,8 +135,8 @@ def create_question_handler(request: HttpRequest) -> dict:
     }
 
 
-def create_question_from_json(question_json:dict)->dict:
-    result = QuestionData.from_json(question_json)
+def create_question_from_json(question_json:dict, user:GameUser)->dict:
+    result = QuestionData.from_json(question_json, user)
     if result is None:
         return {
             'status': 403,
