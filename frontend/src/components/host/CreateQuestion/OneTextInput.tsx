@@ -2,6 +2,7 @@ import { TextField } from "@mui/material";
 import * as React from "react";
 
 interface OneTextInputProps {
+  value: string;
   onChange: (value: string) => void;
   title?: string;
   optional?: boolean;
@@ -10,10 +11,13 @@ interface OneTextInputProps {
 export const OneTextInput = (props: OneTextInputProps): JSX.Element => {
   const [value, onValueChange] = React.useState<string>('');
   const [error, changeError] = React.useState<string>('This field is required');
+  React.useEffect(()=>{
+    onValueChange(props.value ? props.value : '');
+  }, [props.value]);
   const onChange = (event: { target: { value: string } }): void => {
     if (!event.target.value) {
       changeError('This field is required');
-      onValueChange(null);
+      onValueChange('');
     } else {
       changeError(null);
       onValueChange(event.target.value);
@@ -29,6 +33,7 @@ export const OneTextInput = (props: OneTextInputProps): JSX.Element => {
   }
   return (
     <TextField
+      autoComplete='off'
       required={!props.optional}
       type="text"
       label={props.title}

@@ -7,30 +7,25 @@ import { AnswerInputNumber } from './AnswerInputNumber';
 import { AnswerInputText } from './AnswerInputText';
 
 interface OneAnswerInputElementProps {
-    numberOfLanguages: number;
+    answer: AnswerObject;
     questionType: QuestionType;
-    setAnswers: (answers: AnswerObject[]) => void;
 }
 
 export const OneAnswerInputElement = (props: OneAnswerInputElementProps): JSX.Element => {
-    const answer: AnswerObject = new AnswerObject();
-    props.setAnswers([answer]);
     const input: JSX.Element = props.questionType == QuestionType.FirstButton ?
         <AnswerInputText
             title='Enter answer'
-            numberOfLanguages={props.numberOfLanguages}
-            setText={(createdObjects: MultiTextCreationObject[]): void => {
-                answer.text = createdObjects;
-            }} />
+            answer={props.answer}
+        />
         : <AnswerInputNumber title='Enter answer' setNumber={(value: number): void => {
-            answer.correct_value = value;
+            props.answer.correct_value = value;
         }} />
     return <>
         <AutoScaleMaterialRow>
             <AnswerInputNumber
                 title='Points worth'
                 setNumber={(value: number): void => {
-                    answer.points_value = value;
+                    props.answer.points_value = value;
                 }} />
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>

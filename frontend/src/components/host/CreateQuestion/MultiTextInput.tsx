@@ -4,27 +4,20 @@ import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow'
 import { OneTextInput } from './OneTextInput';
 
 interface MultiTextInputProps {
-    numberOfLanguages: number;
+    items: MultiTextCreationObject[];
     title?: string;
     optional?: boolean;
-    setObject: (createdObjects: MultiTextCreationObject[]) => void;
 }
 
 export const MultiTextInput = (props: MultiTextInputProps): JSX.Element => {
-    let items: MultiTextCreationObject[] = [];
-    for (let i = 0; i < props.numberOfLanguages; i++) {
-        const obj = new MultiTextCreationObject();
-        obj.sort_order = i;
-        obj.text = '';
-        items.push(obj);
-    }
-    props.setObject(items);
+    console.log(props);
     return <>
-        {items.map(
+        {props.items.map(
             (value, index) => {
                 return (
                     <AutoScaleMaterialRow key={index}>
                         <OneTextInput
+                            value={value.text}
                             optional={props.optional}
                             title={`${props.title} language ${index + 1}`}
                             onChange={(text: string) => {

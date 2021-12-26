@@ -10,6 +10,9 @@ interface AnswerInputNumberProps {
 
 export const AnswerInputNumber = (props: AnswerInputNumberProps): JSX.Element => {
     const [value, setValue] = React.useState<string>(props.initialValue ? props.initialValue.toString() : '0');
+    React.useEffect(()=>{
+      setValue(props.initialValue ? props.initialValue.toString() : '0');
+    }, [props.initialValue]);
     const [error, changeError] = React.useState<string>(null);
     const onValueChange = (event: { target: { value: string } }) => {
         if (event.target.value == undefined || event.target.value == '' || event.target.value == null) {
@@ -30,6 +33,7 @@ export const AnswerInputNumber = (props: AnswerInputNumberProps): JSX.Element =>
     }
     return <TextField
         required={!props.optional}
+        autoComplete='off'
         type='number'
         value={value}
         onChange={onValueChange}

@@ -1,12 +1,10 @@
 import * as React from 'react'
 import { AnswerObject } from '../../../apiclient/models/createrequests/AnswerObject';
-import { MultiTextCreationObject } from '../../../apiclient/models/createrequests/MultiTextCreationObject';
 import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow'
 import { AnswerInputNumber } from './AnswerInputNumber';
 import { AnswerInputText } from './AnswerInputText';
 
 interface AnswerInputFamilyFeudProps {
-    numberOfLanguages: number;
     index: number;
     answer: AnswerObject;
 
@@ -30,11 +28,9 @@ export const AnswerInputFamilyFeud = (props: AnswerInputFamilyFeudProps): JSX.El
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>
             <AnswerInputText
-                title={`Answer ${props.index+1}`}
-                numberOfLanguages={props.numberOfLanguages}
-                setText={(createdObjects: MultiTextCreationObject[]): void => {
-                    props.answer.text = createdObjects;
-                }} />
+                title={`Answer ${props.index + 1}`} 
+                answer={props.answer}
+            />
         </AutoScaleMaterialRow>
     </>
 }

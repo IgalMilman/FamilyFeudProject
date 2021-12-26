@@ -25,7 +25,9 @@ class RealAnswer(RealDataAbstract):
             "id": self.unid,
             "is_shown": self.is_shown,
             "team": self.team.number if self.team is not None else None,
-            "created": self.answer_created.timestamp() if self.answer_created is not None else None,
+            "created": self.answer_created.timestamp()
+            if self.answer_created is not None
+            else None,
             "created_time": self.answer_created,
         }
 

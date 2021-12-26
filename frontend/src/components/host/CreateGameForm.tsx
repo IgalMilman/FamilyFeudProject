@@ -19,15 +19,16 @@ export const CreateGameForm = (props: CreateGameFormProps): JSX.Element => {
     const [title, titleChange] = React.useState<string>('');
     const [error, setError] = React.useState<string>(null);
     return <AutoScaleMaterialColumn spacing={2}>
-        {error && 
-        <AutoScaleMaterialRow>
-            <Alert severity="error">{error}</Alert>
-        </AutoScaleMaterialRow>}
+        {error &&
+            <AutoScaleMaterialRow>
+                <Alert severity="error">{error}</Alert>
+            </AutoScaleMaterialRow>}
         <AutoScaleMaterialRow>
             <Typography variant="h5">Create a new game</Typography>
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>
             <TextField
+                autoComplete='off'
                 type="text"
                 label="Game title"
                 onChange={(event: { target: { value: string; }; }): void => {

@@ -15,6 +15,7 @@ interface InputFieldWithLabelProps {
 export const InputFieldWithLabel = (props: InputFieldWithLabelProps): JSX.Element => {
     return <AutoScaleMaterialRow>
         <TextField
+            autoComplete='off'
             label={props.label}
             type={props.inputtype}
             value={props.currentValue}

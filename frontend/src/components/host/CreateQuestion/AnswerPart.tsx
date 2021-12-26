@@ -1,30 +1,21 @@
 import * as React from 'react'
-import { AnswerObject } from '../../../apiclient/models/createrequests/AnswerObject';
+import { QuestionObject } from '../../../apiclient/models/createrequests/QuetionObject';
 import { QuestionType } from '../../../enums/QuestionType';
-import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
-import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow';
 import { FamilyFeudAnswerElement } from './FamilyFeudAnswerElement';
 import { OneAnswerInputElement } from './OneAnswerInputElement';
 
 interface AnswerPartProps {
-    numberOfLanguages: number;
-    questionType: QuestionType;
-    setAnswers: (answers: AnswerObject[]) => void;
+    question: QuestionObject;
 }
 
 export const AnswerPart = (props: AnswerPartProps): JSX.Element => {
     let input:JSX.Element = undefined;
-    switch (props.questionType) {
+    switch (props.question.qtype) {
         case QuestionType.FamilyFeud:
-            input = <FamilyFeudAnswerElement
-                numberOfLanguages={props.numberOfLanguages}
-                setAnswers={props.setAnswers} />
+            input = <FamilyFeudAnswerElement question={props.question}/>
             break;
         default:
-            input = <OneAnswerInputElement 
-            numberOfLanguages={props.numberOfLanguages} 
-            questionType={props.questionType}
-            setAnswers={props.setAnswers} />
+            input = <OneAnswerInputElement answer={props.question.answers[0]} questionType={props.question.qtype} />
     }
     return input;
 }

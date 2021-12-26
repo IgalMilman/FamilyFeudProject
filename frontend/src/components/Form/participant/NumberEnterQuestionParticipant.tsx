@@ -8,9 +8,10 @@ export function NumberEnterQuestionParticipant(props: QuestionProps): JSX.Elemen
     }
     return (
         <TextField
+            autoComplete='off'
             type="number"
             onChange={onChange}
-            value={props.value?props.value:0 }
+            value={props.value ? props.value : 0}
         />
     )
 }

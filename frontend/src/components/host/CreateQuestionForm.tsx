@@ -2,8 +2,6 @@ import { Select, MenuItem, TextField } from '@mui/material';
 import * as React from 'react'
 import { ApiClient } from '../../apiclient/ApiClient';
 import { APIResponse } from '../../apiclient/models/APIResponse';
-import { AnswerObject } from '../../apiclient/models/createrequests/AnswerObject';
-import { MultiTextCreationObject } from '../../apiclient/models/createrequests/MultiTextCreationObject';
 import { QuestionObject } from '../../apiclient/models/createrequests/QuetionObject';
 import { QuestionData } from '../../apiclient/models/QuestionData';
 import { QuestionType, QuestionTypeFromNumber } from '../../enums/QuestionType';
@@ -14,22 +12,38 @@ import { MessageArea, MessageAreaProps } from '../common/MessageArea';
 import { SubmitButton } from '../common/QuestionSubmitButton';
 import { AnswerInputNumber } from './CreateQuestion/AnswerInputNumber';
 import { AnswerPart } from './CreateQuestion/AnswerPart';
-import { MultiTextInput } from './CreateQuestion/MultiTextInput';
+import { QuestionTextInput } from './CreateQuestion/QuestionTextInput';
 
 interface CreateQuestionFormProps {
 
 }
 
+const DEFAULT_NUMBER_OF_LANGUAGES = 1;
+const DEFAULT_LANGUAGE_TYPE = QuestionType.FamilyFeud;
+
+const createQuestionObjects = (numberOfLanguages: number, questionType: QuestionType, numberOfAnswers: number = 1): QuestionObject => {
+    const question = new QuestionObject();
+    question.qtype = questionType;
+    question.scaleLanguageCount(numberOfLanguages);
+    question.scaleAnswerCount(numberOfAnswers);
+    return question;
+}
+
 export const CreateQuestionForm = (props: CreateQuestionFormProps): JSX.Element => {
-    const [numberOfLanguages, changeNumberOfLanguages] = React.useState<number>(1);
-    const [questionType, changeQuestionType] = React.useState<QuestionType>(QuestionType.FamilyFeud);
+    const [numberOfLanguages, changeNumberOfLanguages] = React.useState<number>(DEFAULT_NUMBER_OF_LANGUAGES);
+    const [questionType, changeQuestionType] = React.useState<QuestionType>(DEFAULT_LANGUAGE_TYPE);
     const [message, changeMessage] = React.useState<MessageAreaProps>(null);
-    const [question, changeQuestion] = React.useState<QuestionObject>(new QuestionObject());
+    const [question, changeQuestion] = React.useState<QuestionObject>(createQuestionObjects(DEFAULT_NUMBER_OF_LANGUAGES, DEFAULT_LANGUAGE_TYPE));
     const onQuestionTypeChange = (event: { target: { value: string } }): void => {
         const t: QuestionType = QuestionTypeFromNumber(parseInt(event.target.value));
+        question.changeQuestionType(t);
         changeQuestionType(t);
     }
-
+    const onChangeNumberOfLanguages = (value: number): void => {
+        question.scaleLanguageCount(value);
+        changeNumberOfLanguages(value);
+    }
+    console.log(question);
     return <AutoScaleMaterialRow>
         <AutoScaleMaterialColumn spacing={1}>
             <MessageArea {...message} />
@@ -45,34 +59,31 @@ export const CreateQuestionForm = (props: CreateQuestionFormProps): JSX.Element 
                 </Select>
             </AutoScaleMaterialRow>
             <AutoScaleMaterialRow>
-                <AnswerInputNumber
-                    setNumber={changeNumberOfLanguages}
-                    initialValue={numberOfLanguages}
-                    optional={false}
-                    title='Number of languages'
+                <TextField
+                    type='number'
+                    label='Number of languages'
+                    value={numberOfLanguages}
+                    onChange={(event: { target: { value: string } }) => {
+                        onChangeNumberOfLanguages(parseInt(event.target.value));
+                    }}
+                    autoComplete='off'
                 />
             </AutoScaleMaterialRow>
-            <MultiTextInput numberOfLanguages={numberOfLanguages}
-                title='Question'
-                setObject={(createdObjects: MultiTextCreationObject[]) => {
-                    question.text = createdObjects;
-                }} />
+            <QuestionTextInput question={question} />
             <AnswerPart
-                numberOfLanguages={numberOfLanguages}
-                questionType={questionType}
-                setAnswers={(answers: AnswerObject[]): void => {
-                    question.answers = answers;
-                }} />
+                question={question}
+            />
             <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={false} onClick={function (): void {
                 question.qtype = questionType;
                 ApiClient.getClient().createQuestion(question).then((value: APIResponse<QuestionData>) => {
                     if (!value) {
-                        changeMessage({type:'error', text: 'There was error with the request'});
+                        changeMessage({ type: 'error', text: 'There was error with the request' });
                         return;
                     }
                     if (value.status == 200) {
                         changeMessage({ type: 'success', text: 'Question was created successfully.' });
-                        changeQuestion(new QuestionObject());
+                        setTimeout(() => { changeMessage(undefined) }, 10000);
+                        changeQuestion(createQuestionObjects(numberOfLanguages, questionType, question.answers.length));
                     }
                     else {
                         changeMessage({ type: 'error', text: value.error });

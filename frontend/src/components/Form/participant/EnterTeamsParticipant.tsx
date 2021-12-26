@@ -28,6 +28,7 @@ export function EnterTeamsNamePatricipant(props: EnterTeamsNamePatricipantProps)
                 <MessageArea {...message} />
                 <AutoScaleMaterialRow>
                     <TextField
+                        autoComplete='off'
                         type="text"
                         onChange={onValueChange}
                         value={value}
