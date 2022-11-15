@@ -10,7 +10,6 @@ interface MultiTextInputProps {
 }
 
 export const MultiTextInput = (props: MultiTextInputProps): JSX.Element => {
-    console.log(props);
     return <>
         {props.items.map(
             (value, index) => {

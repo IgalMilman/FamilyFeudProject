@@ -108,6 +108,7 @@ venv.bak/
 #Private folders
 /private
 /uploads
+/assets
 
 #Local settings
 funquizgame/settings/local.py

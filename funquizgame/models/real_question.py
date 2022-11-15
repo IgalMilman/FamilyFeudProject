@@ -22,13 +22,20 @@ class RealQuestion(RealDataAbstract):
         return result
 
     def get_all_real_answers_json(self, role: RequesterRole) -> list:
-        real_answers = []
+        result = []
+        question_price = {}
         for sec in self.realanswer_set.all():
-            real_answers.append(sec.json(role))
-        result = list(filter(lambda x: x is not None, real_answers))
+            if not sec:
+                continue
+            result.append(sec.json(role))
+            if sec.answer_data and sec.answer_data.points_value:
+                question_price[sec.unid] = sec.answer_data.points_value
+            if sec.additional_points:
+                question_price[sec.unid] = (
+                    question_price.get(sec.unid, 0) + sec.additional_points
+                )
         result.sort(
-            key=lambda x: x.get("additional_points", 0)
-            + x.get("answerdata", {}).get("points_value", 0),
+            key=lambda x: question_price.get(x.get("id", ""), 0),
             reverse=True,
         )
         return result

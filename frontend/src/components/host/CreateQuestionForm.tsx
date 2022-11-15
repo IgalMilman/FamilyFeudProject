@@ -43,7 +43,6 @@ export const CreateQuestionForm = (props: CreateQuestionFormProps): JSX.Element 
         question.scaleLanguageCount(value);
         changeNumberOfLanguages(value);
     }
-    console.log(question);
     return <AutoScaleMaterialRow>
         <AutoScaleMaterialColumn spacing={1}>
             <MessageArea {...message} />
