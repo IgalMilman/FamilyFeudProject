@@ -4,6 +4,8 @@ export enum QuestionType {
   FamilyFeud = 3,
 }
 
+export const ALL_QUESTION_TYPE_VALUES: number[] = [1, 2, 3];
+
 export function QuestionTypeFromNumber(input?: number): QuestionType {
   switch (input) {
     case 1:

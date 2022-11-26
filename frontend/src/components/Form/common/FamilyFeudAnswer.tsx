@@ -1,11 +1,11 @@
 import { TableCell, TableRow } from '@mui/material';
 import * as React from 'react';
-import { Answer } from '../../../apiclient/models/Answer';
+import { RealAnswer } from '../../../apiclient/models/RealAnswer';
 import { getBackgroundCssClassForTeam } from '../../../enums/TeamColorsCss';
 import { AllLanguageOutput } from '../../common/AllLanguageOutput';
 
 interface FamilyFeudAnswerProps {
-    answer: Answer;
+    answer: RealAnswer;
 }
 
 export function FamilyFeudAnswer(props: FamilyFeudAnswerProps): JSX.Element {

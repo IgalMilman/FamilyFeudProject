@@ -2,7 +2,7 @@ import * as React from 'react'
 import { QuestionFormParticipant } from './form/participant/QuestionFormParticipant';
 import { QuestionFormHost } from './form/host/QuestionFormHost';
 import { QuestionFormShow } from './form/show/QuestionFormShow';
-import { Question } from '../apiclient/models/Question';
+import { RealQuestion } from '../apiclient/models/RealQuestion';
 import { ClientRole } from '../enums/ClientRole';
 import { MainGameContentProps } from './common/MainGameContentProps';
 import { GameStatus } from '../enums/GameStatus';
@@ -10,7 +10,7 @@ import { EnterTeamsNamePatricipant } from './form/participant/EnterTeamsParticip
 import { getTeam } from './common/Utils';
 
 export function GameContentQuestion(props: MainGameContentProps): JSX.Element {
-    const question: Question = props.game?.active_question;
+    const question: RealQuestion = props.game?.active_question;
     let mainElement = undefined;
     switch (props.currentRole) {
         case (ClientRole.Host):

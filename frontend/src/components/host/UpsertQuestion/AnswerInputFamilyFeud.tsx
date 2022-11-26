@@ -17,18 +17,22 @@ export const AnswerInputFamilyFeud = (props: AnswerInputFamilyFeudProps): JSX.El
                 title='People answered'
                 setNumber={function (value: number): void {
                     props.answer.people_answered = value;
-                }} />
+                }}
+                initialValue={props.answer.people_answered}
+            />
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>
             <AnswerInputNumber
                 title='Points worth'
                 setNumber={(value: number): void => {
                     props.answer.points_value = value;
-                }} />
+                }}
+                initialValue={props.answer.points_value}
+            />
         </AutoScaleMaterialRow>
         <AutoScaleMaterialRow>
             <AnswerInputText
-                title={`Answer ${props.index + 1}`} 
+                title={`Answer ${props.index + 1}`}
                 answer={props.answer}
             />
         </AutoScaleMaterialRow>

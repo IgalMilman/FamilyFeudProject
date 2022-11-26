@@ -11,7 +11,7 @@ export function GameQuestionSelection(props: MainGameContentProps): JSX.Element 
     const [questionList, changeQuestionList] = React.useState<QuestionData[]>(null);
     React.useEffect(() => {
         if (props.game?.id) {
-            ApiClient.getClient().getQuestionsList(props.game?.id).then(
+            ApiClient.getClient().getQuestionsForGameList(props.game?.id).then(
                 (value: QuestionData[]) => {
                     changeQuestionList(value);
                 }

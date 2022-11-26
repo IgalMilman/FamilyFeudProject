@@ -1,4 +1,8 @@
-import { QuestionType } from "../../../enums/QuestionType";
+import {
+  QuestionType,
+  QuestionTypeFromNumber,
+} from "../../../enums/QuestionType";
+import { QuestionData } from "../QuestionData";
 import { AnswerObject } from "./AnswerObject";
 import { MultiTextCreationObject } from "./MultiTextCreationObject";
 
@@ -6,8 +10,10 @@ export class QuestionObject {
   constructor() {
     this.text = [];
     this.answers = [];
+    this.id = undefined;
   }
 
+  id: string | undefined;
   qtype: 1 | 2 | 3;
   text: MultiTextCreationObject[];
   answers: AnswerObject[];
@@ -33,9 +39,9 @@ export class QuestionObject {
     }
     if (newCount > this.text.length) {
       for (let i = this.text.length; i < newCount; i++) {
-        const multiText: MultiTextCreationObject = new MultiTextCreationObject();
-        multiText.text = '';
-        multiText.sort_order = i;
+        const multiText: MultiTextCreationObject = new MultiTextCreationObject(
+          i
+        );
         this.text.push(multiText);
       }
     } else {
@@ -43,8 +49,11 @@ export class QuestionObject {
         this.text.pop();
       }
     }
-    if ((this.qtype == QuestionType.FamilyFeud) || (this.qtype == QuestionType.FirstButton)) {
-      for(const answer of this.answers) {
+    if (
+      this.qtype == QuestionType.FamilyFeud ||
+      this.qtype == QuestionType.FirstButton
+    ) {
+      for (const answer of this.answers) {
         answer.scaleLanguageCount(newCount);
       }
     }
@@ -60,5 +69,18 @@ export class QuestionObject {
 
   private getAnswerLanguageCount(): number {
     return this.qtype == QuestionType.NumberEnter ? -1 : this.text?.length;
+  }
+
+  public static fromQuestionData(questionData: QuestionData): QuestionObject {
+    const result: QuestionObject = new QuestionObject();
+    result.id = questionData.id;
+    result.changeQuestionType(QuestionTypeFromNumber(questionData.qtype));
+    result.text = MultiTextCreationObject.fromTextArray(questionData.text);
+    if (questionData.answers) {
+      result.answers = questionData.answers.map((answer) =>
+        AnswerObject.fromAnswerData(answer)
+      );
+    }
+    return result;
   }
 }

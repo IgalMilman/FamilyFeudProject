@@ -1,4 +1,5 @@
 import logging
+from typing import Tuple
 from django.db.models.deletion import CASCADE
 
 from django.db import models
@@ -35,6 +36,29 @@ class AnswerData(MultiLanguageField):
 
     @staticmethod
     def from_json(json: dict, question:QuestionData):
+        id = json.get('id', None)
+        textlist, value, people, points = AnswerData.validate_json(json)
+        try:
+            if id is None:
+                answer:AnswerData = AnswerData.objects.create(question=question, correct_value=value, people_answered=people, points_value=points)
+            else:
+                [answer, _] = AnswerData.objects.get_or_create(unid=id, question=question)
+                answer.correct_value = value
+                answer.people_answered = people
+                answer.points_value = points
+                answer.save()
+            if textlist is not None and len(textlist) > 0:
+                res = answer.upsert_text(textlist)
+                if res is None:
+                    answer.delete()
+                    return None
+            return answer
+        except Exception as e:
+            logging.error(e)
+        return None
+    
+    @staticmethod
+    def validate_json(json:dict)->Tuple[list[str], int, int, int]:
         textlist = json.get('text', None)
         value = json.get('correct_value', None)
         people = json.get('people_answered', None)
@@ -48,14 +72,4 @@ class AnswerData(MultiLanguageField):
             if people is None:
                 builder.add_empty_value_error('people_answered')
             raise builder.build()
-        try:
-            answer:AnswerData = AnswerData.objects.create(question=question, correct_value=value, people_answered=people, points_value=points)
-            if textlist is not None and len(textlist) > 0:
-                res = answer.create_text(textlist)
-                if res is None:
-                    answer.delete()
-                    return None
-            return answer
-        except Exception as e:
-            logging.error(e)
-        return None
+        return (textlist, value, people, points)

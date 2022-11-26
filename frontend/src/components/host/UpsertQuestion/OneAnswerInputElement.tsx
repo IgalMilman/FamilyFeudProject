@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { AnswerObject } from '../../../apiclient/models/createrequests/AnswerObject';
-import { MultiTextCreationObject } from '../../../apiclient/models/createrequests/MultiTextCreationObject';
 import { QuestionType } from '../../../enums/QuestionType';
 import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow'
 import { AnswerInputNumber } from './AnswerInputNumber';
@@ -17,13 +16,17 @@ export const OneAnswerInputElement = (props: OneAnswerInputElementProps): JSX.El
             title='Enter answer'
             answer={props.answer}
         />
-        : <AnswerInputNumber title='Enter answer' setNumber={(value: number): void => {
-            props.answer.correct_value = value;
-        }} />
+        : <AnswerInputNumber
+            title='Enter answer'
+            initialValue={props.answer.correct_value}
+            setNumber={(value: number): void => {
+                props.answer.correct_value = value;
+            }} />
     return <>
         <AutoScaleMaterialRow>
             <AnswerInputNumber
                 title='Points worth'
+                initialValue={props.answer.points_value}
                 setNumber={(value: number): void => {
                     props.answer.points_value = value;
                 }} />

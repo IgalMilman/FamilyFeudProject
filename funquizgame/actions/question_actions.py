@@ -117,10 +117,10 @@ def reveal_answer(request: HttpRequest, role: RequesterRole, game_id, answerid: 
     return result
 
 
-def create_question_handler(request: HttpRequest) -> dict:
+def upsert_question_handler(request: HttpRequest) -> dict:
     try:
         body: dict = json.loads(request.body.decode('utf-8'))
-        return create_question_from_json(body, request.user)
+        return upsert_question_from_json(body, request.user)
     except ValidationException as e:
         return {
             'status': 403,
@@ -131,16 +131,16 @@ def create_question_handler(request: HttpRequest) -> dict:
         logging.error(e)
     return {
         'status': 403,
-        'error': 'Could not create the question'
+        'error': 'Could not create/update the question'
     }
 
 
-def create_question_from_json(question_json:dict, user:GameUser)->dict:
+def upsert_question_from_json(question_json:dict, user:GameUser)->dict:
     result = QuestionData.from_json(question_json, user)
     if result is None:
         return {
             'status': 403,
-            'error': 'Could not create the question',
+            'error': 'Could not create/update the question',
             'body': question_json,
         }
     return {

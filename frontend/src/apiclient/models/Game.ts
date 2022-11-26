@@ -1,5 +1,5 @@
 import { GameStatus } from "../../enums/GameStatus";
-import { Question } from "./Question";
+import { RealQuestion } from "./RealQuestion";
 import { Team } from "./Team";
 
 export class Game {
@@ -10,6 +10,6 @@ export class Game {
   viewer_access_code?: string;
   gameStatus: GameStatus;
   current_question: string;
-  active_question: Question;
+  active_question: RealQuestion;
   teams: Team[];
 }

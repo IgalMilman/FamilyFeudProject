@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ApiClient } from '../../../apiclient/ApiClient';
-import { Answer } from '../../../apiclient/models/Answer';
+import { RealAnswer } from '../../../apiclient/models/RealAnswer';
 import { GiveAnswer } from '../../../apiclient/models/GiveAnswer';
 import SubmitButtonType from '../../../enums/SubmitButtonType';
 import { AllLanguageOutput } from '../../common/AllLanguageOutput';
@@ -10,7 +10,7 @@ import { TableRow, TableCell } from '@mui/material';
 
 interface FamilyFeudAnswerProps {
     questionid: string;
-    answer: Answer;
+    answer: RealAnswer;
 }
 
 export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element {
@@ -20,7 +20,7 @@ export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element 
         answer.teamnumber = teamnumber;
         answer.reveal = true;
         ApiClient.getClient().submitAnswer(props.questionid, answer).then(
-            (value: Answer) => {
+            (value: RealAnswer) => {
             }
         )
     }
@@ -33,7 +33,7 @@ export function FamilyFeudAnswerHost(props: FamilyFeudAnswerProps): JSX.Element 
                 <AutoScaleMaterialColumn>
                     <SubmitButton type={SubmitButtonType.SubmitAnswer} text="Reveal answer" disabled={false} onClick={() => {
                         ApiClient.getClient().revealAnswer(props.answer?.id).then(
-                            (value: Answer) => {
+                            (value: RealAnswer) => {
                             }
                         )
                     }} />

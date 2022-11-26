@@ -1,6 +1,6 @@
 import { AnswerData } from "./AnswerData";
 
-export class Answer {
+export class RealAnswer {
   id: string;
   is_shown: boolean;
   is_complete: boolean;

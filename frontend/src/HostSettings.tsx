@@ -11,6 +11,7 @@ export function HostSettings(props: {}): JSX.Element {
     const menuItems: MenuData[] = [
         { 'name': 'Select a game', 'mode': AppMode.GameSelection },
         { 'name': 'Game creation', 'mode': AppMode.GameCreation },
+        { 'name': 'Browse Questions', 'mode': AppMode.BrowseQuestions },
         { 'name': 'Question creation', 'mode': AppMode.QuestionCreation }
     ];
 

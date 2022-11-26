@@ -10,12 +10,7 @@ import { AutoScaleMaterialColumn } from '../common/AutoScaleMaterialColumn';
 import { AutoScaleMaterialRow } from '../common/AutoScaleMaterialRow'
 import { SubmitButton } from '../common/QuestionSubmitButton';
 
-interface CreateGameFormProps {
-
-}
-
-export const CreateGameForm = (props: CreateGameFormProps): JSX.Element => {
-
+export const CreateGameScreen = (): JSX.Element => {
     const [title, titleChange] = React.useState<string>('');
     const [error, setError] = React.useState<string>(null);
     return <AutoScaleMaterialColumn spacing={2}>

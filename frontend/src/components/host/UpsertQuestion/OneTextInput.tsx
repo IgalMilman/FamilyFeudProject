@@ -11,7 +11,7 @@ interface OneTextInputProps {
 export const OneTextInput = (props: OneTextInputProps): JSX.Element => {
   const [value, onValueChange] = React.useState<string>('');
   const [error, changeError] = React.useState<string>('This field is required');
-  React.useEffect(()=>{
+  React.useEffect(() => {
     onValueChange(props.value ? props.value : '');
   }, [props.value]);
   const onChange = (event: { target: { value: string } }): void => {

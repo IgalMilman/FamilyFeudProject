@@ -11,6 +11,9 @@ class QuestionData(MultiLanguageField):
         "Question type*", choices=QuestionTypes.get_valid_choices())
     created_by = models.ForeignKey(GameUser, null=True, blank=False, on_delete=CASCADE)
 
+    def update_from_json(self, data:dict, user: GameUser) -> bool:
+        pass
+
     def answers_json(self, role: RequesterRole) -> list:
         result = []
         if not role.is_participant():
@@ -44,15 +47,22 @@ class QuestionData(MultiLanguageField):
 
     @staticmethod
     def from_json(data: dict, user:GameUser) -> 'QuestionData':
+        id = data.get('id', None)
         question_type = data.get('qtype', None)
         answers = data.get('answers', None)
         text = data.get('text', None)
-        if question_type is None or \
+        if question_type is None and id is None or \
             answers is None or not isinstance(answers, list) or len(answers) == 0 or \
             text is None or not isinstance(text, list) or len(text) == 0:
             return None
-        question:QuestionData = QuestionData.objects.create(question_type=question_type, created_by=user)
-        text_objects = question.create_text(text)
+        question:QuestionData = None
+        if id is None:
+            question = QuestionData.objects.create(question_type=question_type, created_by=user)
+        else:
+            [question, _] = QuestionData.objects.get_or_create(unid=id, question_type=question_type)
+            question.created_by = user
+            question.save()
+        text_objects = question.upsert_text(text)
         if text_objects is None: 
             question.delete()
             return None

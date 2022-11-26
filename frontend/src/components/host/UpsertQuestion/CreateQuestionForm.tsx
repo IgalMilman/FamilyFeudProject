@@ -1,22 +1,17 @@
 import { Select, MenuItem, TextField } from '@mui/material';
 import * as React from 'react'
-import { ApiClient } from '../../apiclient/ApiClient';
-import { APIResponse } from '../../apiclient/models/APIResponse';
-import { QuestionObject } from '../../apiclient/models/createrequests/QuetionObject';
-import { QuestionData } from '../../apiclient/models/QuestionData';
-import { QuestionType, QuestionTypeFromNumber } from '../../enums/QuestionType';
-import SubmitButtonType from '../../enums/SubmitButtonType';
-import { AutoScaleMaterialColumn } from '../common/AutoScaleMaterialColumn'
-import { AutoScaleMaterialRow } from '../common/AutoScaleMaterialRow'
-import { MessageArea, MessageAreaProps } from '../common/MessageArea';
-import { SubmitButton } from '../common/QuestionSubmitButton';
-import { AnswerInputNumber } from './CreateQuestion/AnswerInputNumber';
-import { AnswerPart } from './CreateQuestion/AnswerPart';
-import { QuestionTextInput } from './CreateQuestion/QuestionTextInput';
-
-interface CreateQuestionFormProps {
-
-}
+import { ApiClient } from '../../../apiclient/ApiClient';
+import { APIResponse } from '../../../apiclient/models/APIResponse';
+import { QuestionObject } from '../../../apiclient/models/createrequests/QuetionObject';
+import { QuestionData } from '../../../apiclient/models/QuestionData';
+import { QuestionType, QuestionTypeFromNumber } from '../../../enums/QuestionType';
+import SubmitButtonType from '../../../enums/SubmitButtonType';
+import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn'
+import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow'
+import { MessageArea, MessageAreaProps } from '../../common/MessageArea';
+import { SubmitButton } from '../../common/QuestionSubmitButton';
+import { AnswerPart } from './AnswerPart';
+import { QuestionTextInput } from './QuestionTextInput';
 
 const DEFAULT_NUMBER_OF_LANGUAGES = 1;
 const DEFAULT_LANGUAGE_TYPE = QuestionType.FamilyFeud;
@@ -29,7 +24,7 @@ const createQuestionObjects = (numberOfLanguages: number, questionType: Question
     return question;
 }
 
-export const CreateQuestionForm = (props: CreateQuestionFormProps): JSX.Element => {
+export const CreateQuestionForm = (): JSX.Element => {
     const [numberOfLanguages, changeNumberOfLanguages] = React.useState<number>(DEFAULT_NUMBER_OF_LANGUAGES);
     const [questionType, changeQuestionType] = React.useState<QuestionType>(DEFAULT_LANGUAGE_TYPE);
     const [message, changeMessage] = React.useState<MessageAreaProps>(null);
@@ -74,7 +69,7 @@ export const CreateQuestionForm = (props: CreateQuestionFormProps): JSX.Element 
             />
             <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={false} onClick={function (): void {
                 question.qtype = questionType;
-                ApiClient.getClient().createQuestion(question).then((value: APIResponse<QuestionData>) => {
+                ApiClient.getClient().upsertQuestion(question).then((value: APIResponse<QuestionData>) => {
                     if (!value) {
                         changeMessage({ type: 'error', text: 'There was error with the request' });
                         return;

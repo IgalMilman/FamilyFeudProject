@@ -1,6 +1,6 @@
 import { ClientRole } from "../enums/ClientRole";
 import { getCsrfToken } from "./CommonMethods";
-import { Answer } from "./models/Answer";
+import { RealAnswer } from "./models/RealAnswer";
 import { APIResponse } from "./models/APIResponse";
 import { CreateGameRequest } from "./models/CreateGameRequest";
 import { QuestionObject } from "./models/createrequests/QuetionObject";
@@ -8,10 +8,12 @@ import { Game } from "./models/Game";
 import { GameAction } from "./models/GameAction";
 import { GameSelectionOption } from "./models/GameSelectionOption";
 import { GiveAnswer } from "./models/GiveAnswer";
-import { Question } from "./models/Question";
 import { QuestionData } from "./models/QuestionData";
 import { Team } from "./models/Team";
 import { TeamNameChangeRequest } from "./models/TeamNameChange";
+import { QuestionType } from "../enums/QuestionType";
+import { QuestionSummary } from "./models/QuestionSummary";
+import { AnswerData } from "./models/AnswerData";
 
 export class ApiClient {
   static client: ApiClient;
@@ -23,9 +25,8 @@ export class ApiClient {
     api_available_games: () => "/api/game/all",
     api_create_game: () => "/api/game/create",
     api_game_current: () => "/api/game/current",
+    api_all_games: () => "/api/question/all",
     api_game: (game_id: string) => `/api/game/${game_id}`,
-    api_question: (game_id: string, question_id: string) =>
-      `/api/game/${game_id}/question/${question_id}`,
     api_question_reveal: (game_id: string, question_id: string) =>
       `/api/game/${game_id}/question/${question_id}/reveal`,
     api_question_complete: (game_id: string, question_id: string) =>
@@ -39,7 +40,9 @@ export class ApiClient {
     api_answer_reveal: (game_id: string, answer_id: string) =>
       `/api/game/${game_id}/answer/${answer_id}/reveal`,
     api_team_name_change: (game_id: string) => `/api/game/${game_id}/team/name`,
-    api_create_question: () => "/api/question/create",
+    api_question: (game_id: string, question_id: string) =>
+      `/api/question/${question_id}`,
+    api_upsert_question: () => "/api/question/upsert",
     api_logout: () => `/logout`,
   };
 
@@ -64,7 +67,10 @@ export class ApiClient {
       headers: this.generateHeaders(),
     });
     const jsonobject = await response.json();
-    const responseobj: APIResponse<Game> = Object.assign(new APIResponse<Game>(), jsonobject);
+    const responseobj: APIResponse<Game> = Object.assign(
+      new APIResponse<Game>(),
+      jsonobject
+    );
     if (response.status != 200) {
       return null;
     }
@@ -115,7 +121,7 @@ export class ApiClient {
     return true;
   }
 
-  public async getQuestion(question_id: string): Promise<Question> {
+  public async getQuestion(question_id: string): Promise<QuestionData> {
     const url: string = this.generateUrl("api_question", question_id);
     const response = await fetch(url, {
       method: "GET",
@@ -126,10 +132,20 @@ export class ApiClient {
       return null;
     }
     const jsonobject = await response.json();
-    return Object.assign(new Question(), jsonobject);
+    const questionObject: QuestionData = Object.assign(
+      new QuestionData(),
+      jsonobject
+    );
+    questionObject.answers = questionObject.answers?.map((value) => {
+      const answer = Object.assign(new AnswerData(), value);
+      return answer;
+    });
+    return questionObject;
   }
 
-  public async getQuestionsList(game_id: string): Promise<QuestionData[]> {
+  public async getQuestionsForGameList(
+    game_id: string
+  ): Promise<QuestionData[]> {
     const url: string = this.generateUrl("api_question_get_all", game_id);
     const response = await fetch(url, {
       method: "GET",
@@ -142,6 +158,27 @@ export class ApiClient {
     const jsonobject: Array<{}> = await response.json();
     const result = jsonobject.map<QuestionData>((value) =>
       Object.assign(new QuestionData(), value)
+    );
+    return result;
+  }
+
+  public async getQuestionsList(
+    questionTypes: QuestionType[]
+  ): Promise<QuestionSummary[]> {
+    const url: string =
+      this.generateUrl("api_all_games") +
+      this.generateGetParameters({ qt: questionTypes });
+    const response = await fetch(url, {
+      method: "GET",
+      headers: this.generateHeaders(),
+    });
+    if (response.status != 200) {
+      console.log(`Could not fetch data. ${response.body}`);
+      return null;
+    }
+    const jsonobject: Array<{}> = await response.json();
+    const result = jsonobject.map<QuestionSummary>((value) =>
+      Object.assign(new QuestionSummary(), value)
     );
     return result;
   }
@@ -170,10 +207,10 @@ export class ApiClient {
     return null;
   }
 
-  public async createQuestion(
+  public async upsertQuestion(
     questionData: QuestionObject
   ): Promise<APIResponse<QuestionData>> {
-    const response = await fetch(this.generateUrl("api_create_question"), {
+    const response = await fetch(this.generateUrl("api_upsert_question"), {
       method: "PUT",
       headers: this.generateHeaders(),
       body: JSON.stringify(questionData),
@@ -186,7 +223,7 @@ export class ApiClient {
       );
       return result;
     }
-    console.log(`Could not create a game. ${response.body}`);
+    console.log(`Could not create a question. ${response.body}`);
     return null;
   }
 
@@ -202,7 +239,7 @@ export class ApiClient {
   public async submitAnswer(
     question_id: string,
     answer: GiveAnswer
-  ): Promise<Answer> {
+  ): Promise<RealAnswer> {
     const url: string = this.generateUrl("api_question_answer", question_id);
     answer.teamid = this.getTeamId(answer.teamnumber);
     const response = await fetch(url, {
@@ -215,7 +252,7 @@ export class ApiClient {
       return null;
     }
     const jsonobject = await response.json();
-    return Object.assign(new Answer(), jsonobject["answer"]);
+    return Object.assign(new RealAnswer(), jsonobject["answer"]);
   }
 
   public async changeTeamName(
@@ -243,7 +280,7 @@ export class ApiClient {
     return null;
   }
 
-  public async revealAnswer(answerId: string): Promise<Answer> {
+  public async revealAnswer(answerId: string): Promise<RealAnswer> {
     const url: string = this.generateUrl("api_answer_reveal", answerId);
     const response = await fetch(url, {
       method: "PUT",
@@ -254,7 +291,7 @@ export class ApiClient {
       return null;
     }
     const jsonobject = await response.json();
-    return Object.assign(new Answer(), jsonobject["answer"]);
+    return Object.assign(new RealAnswer(), jsonobject["answer"]);
   }
 
   public async performActionOnGame(
@@ -272,6 +309,26 @@ export class ApiClient {
       return false;
     }
     return true;
+  }
+
+  private generateGetParameters(params: {
+    [key: string]: string | number | string[] | number[];
+  }): string {
+    const result: string[] = [];
+    for (const key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        const param = params[key];
+        if (Array.isArray(param)) {
+          for (const value of param) {
+            result.push(`${key}=${value.toString()}`);
+          }
+        }
+      }
+    }
+    if (result.length == 0) {
+      return "";
+    }
+    return `?${result.join("&")}`;
   }
 
   private getTeamId(teamNumber: 1 | 2 | undefined): string | undefined {

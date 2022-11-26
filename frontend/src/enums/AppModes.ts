@@ -5,6 +5,7 @@ enum AppMode {
   Login = "lg",
   GameSelection = "gn",
   GameCreation = "gc",
-  QuestionCreation = "qc"
+  QuestionCreation = "qc",
+  BrowseQuestions = "bq"
 }
 export default AppMode;

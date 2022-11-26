@@ -8,5 +8,5 @@ interface AnswerInputTextProps {
 }
 
 export const AnswerInputText = (props: AnswerInputTextProps): JSX.Element => {
-    return <MultiTextInput  title={props.title} items={props.answer.text} />
+    return <MultiTextInput title={props.title} items={props.answer.text} />
 }

@@ -9,10 +9,10 @@ interface AnswerPartProps {
 }
 
 export const AnswerPart = (props: AnswerPartProps): JSX.Element => {
-    let input:JSX.Element = undefined;
+    let input: JSX.Element = undefined;
     switch (props.question.qtype) {
         case QuestionType.FamilyFeud:
-            input = <FamilyFeudAnswerElement question={props.question}/>
+            input = <FamilyFeudAnswerElement question={props.question} />
             break;
         default:
             input = <OneAnswerInputElement answer={props.question.answers[0]} questionType={props.question.qtype} />

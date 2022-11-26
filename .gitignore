@@ -118,6 +118,7 @@ funquizgame/settings/local.py
 
 #Development settings
 .vscode/*
+.hintrc
 
 #ignore not needed folders, but keep the folders
 funquizgame/logs/*

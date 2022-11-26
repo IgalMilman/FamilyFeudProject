@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Answer } from '../../../apiclient/models/Answer';
+import { RealAnswer } from '../../../apiclient/models/RealAnswer';
 import { AnswerData } from '../../../apiclient/models/AnswerData';
 import { getBackgroundCssClassForTeam } from '../../../enums/TeamColorsCss';
 import { AllLanguageOutput } from '../../common/AllLanguageOutput';
@@ -9,9 +9,9 @@ import { calculateDifferenceInTime } from '../../common/Utils';
 import { QuestionProps } from "../common/QuestionProps";
 
 export function NumberEnterQuestionHost(props: QuestionProps): JSX.Element {
-    let firstAnswer: Answer = null;
+    let firstAnswer: RealAnswer = null;
     let realAnswer: AnswerData = null;
-    let secondAnswer: Answer = null;
+    let secondAnswer: RealAnswer = null;
     let showAnswer: boolean = false;
     if (props.question?.real_answers?.length > 0
         && props.question?.question_data?.answers?.length > 0) {

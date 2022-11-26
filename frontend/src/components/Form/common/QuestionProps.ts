@@ -1,7 +1,7 @@
-import { Question } from "../../../apiclient/models/Question";
+import { RealQuestion } from "../../../apiclient/models/RealQuestion";
 
 export interface QuestionProps {
-    question: Question;
-    callBack?: (value:any)=>void;
-    value?:any;
+  question: RealQuestion;
+  callBack?: (value: any) => void;
+  value?: any;
 }

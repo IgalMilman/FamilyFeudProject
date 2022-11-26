@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from django.db.models.deletion import CASCADE
-from django.urls import reverse
 
 from funquizgame.models.multi_language_item import MultiLanguageField
 
@@ -18,6 +17,9 @@ class TextField(models.Model):
     @staticmethod
     def from_json(json:dict, language_field: MultiLanguageField):
         if 'text' in json:
-            return TextField.objects.create(text=json['text'], sort_order=json.get('sort_order', 0), related_object = language_field)
+            [obj, _] = TextField.objects.get_or_create(sort_order=json.get('sort_order', 0), related_object = language_field)
+            obj.text = json['text']
+            obj.save()
+            return obj
         else:
             return None
