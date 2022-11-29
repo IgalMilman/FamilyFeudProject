@@ -10,11 +10,12 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+const MAX_WIDTH_INPUT = 800;
 const MenuProps = {
     PaperProps: {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
+            maxWidth: MAX_WIDTH_INPUT,
         },
     },
 };
@@ -79,13 +80,13 @@ export const SelectMultipleItems = (props: SelectMultipleItemsProps): JSX.Elemen
 
     return (
         <>
-            <FormControl sx={{ width: 300 }}>
+            <FormControl sx={{ maxWidth: MAX_WIDTH_INPUT + 50 }}>
                 {props.title && <InputLabel shrink htmlFor="select-multiple-native">
                     {props.title}
                 </InputLabel>}
                 <Select
                     multiple
-                    value={props.currentlySelected.map(value=>value.toString())}
+                    value={props.currentlySelected.map(value => value.toString())}
                     onChange={handleChangeMultiple}
                     input={<OutlinedInput label={props.title} />}
                     renderValue={(selected) => (

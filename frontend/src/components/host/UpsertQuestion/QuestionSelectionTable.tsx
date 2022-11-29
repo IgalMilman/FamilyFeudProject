@@ -24,7 +24,6 @@ export function QuestionSelectionTable(props: QuestionSelectionTableProps): JSX.
         applicableValues[value.toString()] = QuestionTextFromNumber(value);
     }
     const changeSelectedQuestionTypes = (newTypes: number[] | string[]) => {
-        console.log(newTypes);
         if (!newTypes || newTypes.length == 0) {
             setState([state[0], []]);
         }

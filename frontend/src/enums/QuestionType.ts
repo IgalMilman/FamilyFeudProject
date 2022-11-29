@@ -18,14 +18,12 @@ export function QuestionTypeFromNumber(input?: number): QuestionType {
   return null;
 }
 
+export const QuestionTypeNumberToTextMap: {[key: number]: string} = {
+  1: "Number",
+  2: "Button",
+  3: "Fam Feud"
+}
+
 export function QuestionTextFromNumber(input?: number): string {
-  switch (input) {
-    case 1:
-      return "Number";
-    case 2:
-      return "Button";
-    case 3:
-      return "Fam Feud";
-  }
-  return null;
+  return QuestionTypeNumberToTextMap[input] || null;
 }
