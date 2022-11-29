@@ -2,8 +2,8 @@ from django.db.models.deletion import CASCADE
 
 from django.db import models
 from funquizgame.common.common_types import RequesterRole
-from funquizgame.models.question_data import QuestionData
-from funquizgame.models.real_data_abstract import RealDataAbstract
+from ..game_data.question_data import QuestionData
+from .real_data_abstract import RealDataAbstract
 
 
 class RealQuestion(RealDataAbstract):

@@ -1,15 +1,11 @@
 import logging
+from typing import List
 
 from django.db.models.query_utils import Q
 from django.http.request import HttpRequest
 
-from funquizgame.common.common_types import RequesterRole, QuestionTypes
-from funquizgame.models.game import Game
-from funquizgame.models.question_data import QuestionData
-from funquizgame.models.real_question import RealQuestion
-
-from typing import List
-
+from funquizgame.common.common_types import QuestionTypes, RequesterRole
+from funquizgame.models import Game, QuestionData, RealQuestion
 from funquizgame.models.users.game_user import GameUser
 
 
@@ -78,7 +74,9 @@ def get_all_questions(
     if not role.is_host():
         return []
     user: GameUser = request.user
-    question_types: list[int] = request.GET.getlist('qtype', QuestionTypes.get_valid_values())
+    question_types: list[int] = request.GET.getlist(
+        "qtype", QuestionTypes.get_valid_values()
+    )
     result = []
     try:
         for question_type in question_types:

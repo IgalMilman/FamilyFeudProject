@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import funquizgame.models.access_code
+import funquizgame.models
 
 
 class Migration(migrations.Migration):

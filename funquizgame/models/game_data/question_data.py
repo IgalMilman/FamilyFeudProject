@@ -2,9 +2,9 @@ import logging
 from django.db import models
 from django.db.models.deletion import CASCADE
 from funquizgame.common.common_types import QuestionTypes, RequesterRole
-from funquizgame.models.game import Game
-from funquizgame.models.multi_language_item import MultiLanguageField
-from funquizgame.models.users.game_user import GameUser
+from ..game import Game
+from ..multi_language_item import MultiLanguageField
+from ..users.game_user import GameUser
 
 class QuestionData(MultiLanguageField):
     question_type = models.SmallIntegerField(
@@ -66,7 +66,7 @@ class QuestionData(MultiLanguageField):
         if text_objects is None: 
             question.delete()
             return None
-        from funquizgame.models.answer_data import AnswerData
+        from .answer_data import AnswerData
         for answer in answers:
             answer_object: AnswerData=AnswerData.from_json(answer, question)
             if answer_object is None:

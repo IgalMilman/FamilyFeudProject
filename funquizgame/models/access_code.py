@@ -4,8 +4,8 @@ from typing import List
 from django.conf import settings
 from django.db import models
 from funquizgame.common.common_functions import generate_access_code
-from funquizgame.models.game import Game
-from funquizgame.models.users.game_user import GameUser
+from .game import Game
+from .users.game_user import GameUser
 
 
 def default_access_code():

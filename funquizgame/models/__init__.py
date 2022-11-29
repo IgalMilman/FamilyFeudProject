@@ -1,10 +1,8 @@
-from funquizgame.models.answer_data import AnswerData
-from funquizgame.models.game import Game
-from funquizgame.models.multi_language_item import MultiLanguageField
-from funquizgame.models.question_data import QuestionData
-from funquizgame.models.real_answer import RealAnswer
-from funquizgame.models.real_data_abstract import RealDataAbstract
-from funquizgame.models.real_question import QuestionData
-from funquizgame.models.team import Team
-from funquizgame.models.text_field import TextField
-from funquizgame.models.users.game_user import GameUser
+from .game import Game
+from .game_data import AnswerData, QuestionData
+from .multi_language_item import MultiLanguageField
+from .real_data import RealAnswer, RealQuestion
+from .team import Team
+from .text_field import TextField
+from .access_code import AccessCode
+from .users.game_user import GameUser
