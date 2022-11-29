@@ -37,6 +37,7 @@ export function QuestionSelectionTable(props: QuestionSelectionTableProps): JSX.
     return (
         <>
             <SelectMultipleItems
+                isNumber={true}
                 title="Select Question Types"
                 items={applicableValues}
                 currentlySelected={state[1]}
