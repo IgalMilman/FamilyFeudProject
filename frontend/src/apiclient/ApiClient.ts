@@ -1,5 +1,11 @@
 import { ClientRole } from "../enums/ClientRole";
-import { getCsrfToken } from "./CommonMethods";
+import {
+  Factory,
+  getCsrfToken,
+  sendGetRequestAndRecieveDataObject,
+  sendGetRequestAndRecieveDataArray,
+  sendPutRequestAndReieveAnswer,
+} from "./CommonMethods";
 import { RealAnswer } from "./models/RealAnswer";
 import { APIResponse } from "./models/APIResponse";
 import { CreateGameRequest } from "./models/CreateGameRequest";
@@ -14,6 +20,18 @@ import { TeamNameChangeRequest } from "./models/TeamNameChange";
 import { QuestionType } from "../enums/QuestionType";
 import { QuestionSummary } from "./models/QuestionSummary";
 import { AnswerData } from "./models/AnswerData";
+import {
+  GENERIC_URL_MAP_GAME_ENDPOINTS,
+  GENERIC_URL_MAP_QUESTION_ENDPOINTS,
+  GENERIC_URL_MAP_SURVEY_ENDPOINTS,
+  GENERIC_URL_MAP_USER_ENDPOINTS,
+} from "./Endpoints";
+import { Survey } from "./models/survey/Survey";
+import { SurveySummary } from "./models/survey/SurveySummary";
+import { SurveyObject } from "./models/createrequests/SurveyObject";
+import { SurveyAnswerObject } from "./models/createrequests/SurveyAnswerObject";
+import { SurveyAnswer } from "./models/survey/SurveyAnswer";
+import { SurveyWithAnswers } from "./models/survey/SurveyWithAnswers";
 
 export class ApiClient {
   static client: ApiClient;
@@ -21,6 +39,15 @@ export class ApiClient {
   role: ClientRole;
   game: Game;
   gameId: string;
+  urlMapGeneric: {
+    [key: string]: (value: { [vkey: string]: string }) => string;
+  } = Object.assign(
+    {},
+    GENERIC_URL_MAP_GAME_ENDPOINTS,
+    GENERIC_URL_MAP_QUESTION_ENDPOINTS,
+    GENERIC_URL_MAP_USER_ENDPOINTS,
+    GENERIC_URL_MAP_SURVEY_ENDPOINTS
+  );
   urlMap: { [key: string]: (game_id: string, props: string) => string } = {
     api_available_games: () => "/api/game/all",
     api_create_game: () => "/api/game/create",
@@ -311,6 +338,60 @@ export class ApiClient {
     return true;
   }
 
+  public async getSurvey(surveyId: string): Promise<Survey> {
+    const url: string = this.generateUrlGeneric("api_get_survey", {
+      survey_id: surveyId,
+    });
+    return await sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<Survey>(Survey)
+    );
+  }
+
+  public async getSurveyForGame(surveyId: string): Promise<Survey> {
+    const url: string = this.generateUrlGeneric("api_get_survey_for_game", {
+      survey_id: surveyId,
+      game_id: this.gameId,
+    });
+    return await sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<Survey>(Survey)
+    );
+  }
+
+  public async getSurveySummaries(): Promise<SurveySummary[]> {
+    const url: string = this.generateUrlGeneric("api_get_all_surveys", {});
+    return await sendGetRequestAndRecieveDataArray(url, new Factory<SurveySummary>(SurveySummary))
+  }
+
+  public async getSurveyForGameWithAnswers(
+    surveyId: string
+  ): Promise<SurveyWithAnswers> {
+    const url: string = this.generateUrlGeneric("api_get_all_surveys", {});
+    return await sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<Survey>(Survey)
+    );
+  }
+
+  public async upsertSurvey(
+    surveyData: SurveyObject
+  ): Promise<APIResponse<Survey>> {
+    const url: string = this.generateUrlGeneric("api_upsert_survey", {});
+    return sendPutRequestAndReieveAnswer(url, surveyData);
+  }
+
+  public async upsertSurveyAnswerForGame(
+    surveyId: string,
+    surveyAnswerData: SurveyAnswerObject
+  ): Promise<APIResponse<SurveyAnswer>> {
+    const url: string = this.generateUrlGeneric("api_upsert_answer_to_survey", {
+      game_id: this.gameId,
+      survey_id: surveyId,
+    });
+    return sendPutRequestAndReieveAnswer(url, surveyAnswerData);
+  }
+
   private generateGetParameters(params: {
     [key: string]: string | number | string[] | number[];
   }): string {
@@ -336,6 +417,14 @@ export class ApiClient {
       return this.game.teams[teamNumber - 1].id;
     }
     return undefined;
+  }
+
+  private generateUrlGeneric(
+    urlname: string,
+    parameters: { [vkey: string]: string }
+  ): string {
+    const result = this.urlMapGeneric[urlname](parameters);
+    return result;
   }
 
   private generateUrl(urlname: string, id: string = ""): string {
