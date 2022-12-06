@@ -4,7 +4,7 @@ from typing import List
 from django.db.models.query_utils import Q
 from django.http.request import HttpRequest
 
-from funquizgame.common.common_types import QuestionTypes, RequesterRole
+from funquizgame.common.common_types import GameQuestionTypes, RequesterRole
 from funquizgame.models import Game, QuestionData, RealQuestion
 from funquizgame.models.users.game_user import GameUser
 
@@ -75,12 +75,12 @@ def get_all_questions(
         return []
     user: GameUser = request.user
     question_types: list[int] = request.GET.getlist(
-        "qtype", QuestionTypes.get_valid_values()
+        "qtype", GameQuestionTypes.get_valid_values()
     )
     result = []
     try:
         for question_type in question_types:
-            if question_type not in QuestionTypes.get_valid_values():
+            if question_type not in GameQuestionTypes.get_valid_values():
                 continue
             questions: List[QuestionData] = QuestionData.objects.filter(
                 question_type=question_type

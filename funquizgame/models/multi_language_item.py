@@ -6,22 +6,17 @@ from django.db import models
 
 class MultiLanguageField(models.Model):
     unid = models.UUIDField(
-        default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+        default=uuid.uuid4, editable=False, unique=True, primary_key=True
+    )
 
     def prepare_data(self):
         pass
 
     def get_all_text(self) -> list:
-        result = []
-        for text in self.textfield_set.all().order_by('sort_order'):
-            result.append(text.json())
-        return list(filter(lambda x: x is not None, result))
+        return [text.json() for text in self.textfield_set.all().order_by('sort_order')]
 
-    def json(self) -> dict:
-        return {
-            'id': self.unid,
-            'text': self.get_all_text()
-        }
+    def json(self, text_field_name: str = 'text') -> dict:
+        return {'id': self.unid, text_field_name: self.get_all_text()}
 
     def upsert_text(self, textlist: list) -> list:
         from funquizgame.models.text_field import TextField

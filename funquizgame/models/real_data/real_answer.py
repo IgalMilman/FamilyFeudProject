@@ -1,7 +1,7 @@
 from django.db.models.deletion import CASCADE
 
 from django.db import models
-from funquizgame.common.common_types import QuestionTypes, RequesterRole
+from funquizgame.common.common_types import GameQuestionTypes, RequesterRole
 from ..game_data.question_data import QuestionData
 from ..team import Team
 from ..game_data.answer_data import AnswerData
@@ -50,7 +50,7 @@ class RealAnswer(RealDataAbstract):
 
     @staticmethod
     def create_real_answers(realquestion: RealQuestion, question: QuestionData):
-        if question.question_type == QuestionTypes.FAMILY_FUID:
+        if question.question_type == GameQuestionTypes.FAMILY_FUID:
             for answer in question.answerdata_set.all().order_by("-points_value"):
                 RealAnswer.objects.get_or_create(
                     question=realquestion, game=realquestion.game, answer_data=answer

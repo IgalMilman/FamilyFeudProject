@@ -1,18 +1,15 @@
 import logging
 from django.db import models
 from django.db.models.deletion import CASCADE
-from funquizgame.common.common_types import QuestionTypes, RequesterRole
+from funquizgame.common.common_types import GameQuestionTypes, RequesterRole
 from ..game import Game
 from ..multi_language_item import MultiLanguageField
 from ..users.game_user import GameUser
 
 class QuestionData(MultiLanguageField):
     question_type = models.SmallIntegerField(
-        "Question type*", choices=QuestionTypes.get_valid_choices())
+        "Question type*", choices=GameQuestionTypes.get_valid_choices())
     created_by = models.ForeignKey(GameUser, null=True, blank=False, on_delete=CASCADE)
-
-    def update_from_json(self, data:dict, user: GameUser) -> bool:
-        pass
 
     def answers_json(self, role: RequesterRole) -> list:
         result = []

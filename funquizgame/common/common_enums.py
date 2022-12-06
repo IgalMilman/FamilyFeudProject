@@ -35,7 +35,7 @@ class RequesterRole(Enum):
         return cls(role)
 
 
-class QuestionTypes(IntEnum):
+class GameQuestionTypes(IntEnum):
     NUMBER_ENTER = 1
     FIRST_BUTTON = 2
     FAMILY_FUID = 3
@@ -50,9 +50,9 @@ class QuestionTypes(IntEnum):
 
     @staticmethod
     def get_valid_choices():
-        return [(QuestionTypes.NUMBER_ENTER.value, "Enter a number"),
-                (QuestionTypes.FIRST_BUTTON.value, "First button click"),
-                (QuestionTypes.FAMILY_FUID.value, "Family feud type")]
+        return [(GameQuestionTypes.NUMBER_ENTER.value, "Enter a number"),
+                (GameQuestionTypes.FIRST_BUTTON.value, "First button click"),
+                (GameQuestionTypes.FAMILY_FUID.value, "Family feud type")]
 
 
 class GAME_STATUSES(Enum):

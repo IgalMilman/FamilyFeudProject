@@ -41,7 +41,7 @@ class RequesterRole(Enum):
         return cls(role)
 
 
-class QuestionTypes(IntEnum):
+class GameQuestionTypes(IntEnum):
     NUMBER_ENTER = 1
     FIRST_BUTTON = 2
     FAMILY_FUID = 3
@@ -56,9 +56,9 @@ class QuestionTypes(IntEnum):
 
     @staticmethod
     def get_valid_choices():
-        return [(QuestionTypes.NUMBER_ENTER.value, "Enter a number"),
-                (QuestionTypes.FIRST_BUTTON.value, "First button click"),
-                (QuestionTypes.FAMILY_FUID.value, "Family feud type")]
+        return [(GameQuestionTypes.NUMBER_ENTER.value, "Enter a number"),
+                (GameQuestionTypes.FIRST_BUTTON.value, "First button click"),
+                (GameQuestionTypes.FAMILY_FUID.value, "Family feud type")]
 
 
 class GAME_STATUSES(Enum):
@@ -83,3 +83,27 @@ class GAME_STATUSES(Enum):
                 (GAME_STATUSES.DASHBOARD.value, "Dashboard"),
                 (GAME_STATUSES.QUESTION.value, "Question"),
                 (GAME_STATUSES.ENDING.value, "Ending")]
+
+
+class SurveyQuestionTypes(IntEnum):
+    NUMBER_ENTER = 1
+    TEXT_ENTRY = 2
+    MULTI_LINE_TEXT_ENTRY = 3
+    OPTION_SELECT = 4
+    PLAYER_SELECT = 5
+
+    @classmethod
+    def has_value(cls, value) -> bool:
+        return value in cls._value2member_map_
+
+    @classmethod
+    def get_valid_values(cls) -> List[int]:
+        return [member.value for member in list(cls)]
+
+    @staticmethod
+    def get_valid_choices():
+        return [(SurveyQuestionTypes.NUMBER_ENTER.value, "Enter a number"),
+                (SurveyQuestionTypes.TEXT_ENTRY.value, "Enter short text"),
+                (SurveyQuestionTypes.MULTI_LINE_TEXT_ENTRY.value, "Enter multiline text"),
+                (SurveyQuestionTypes.OPTION_SELECT.value, "Select from options"),
+                (SurveyQuestionTypes.PLAYER_SELECT.value, "Select a player")]

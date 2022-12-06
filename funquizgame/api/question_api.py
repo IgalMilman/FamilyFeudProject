@@ -14,8 +14,7 @@ from funquizgame.data_getters.question import (
     get_all_questions,
     get_all_questions_for_game,
     get_all_questions_of_type_for_game,
-    get_question_data,
-    get_real_question,
+    get_question_data
 )
 
 
