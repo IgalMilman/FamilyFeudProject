@@ -2,9 +2,9 @@ import * as React from 'react'
 import { LoginMode } from '../enums/LoginMode'
 import { AutoScaleMaterialColumn } from './common/AutoScaleMaterialColumn';
 import { AutoScaleMaterialRow } from './common/AutoScaleMaterialRow';
-import { AccessCodeLoginForm } from './form/login/AccessCodeLoginForm';
-import { ChangeLoginMode } from './form/login/ChangeLoginMode';
-import { UsernameLoginForm } from './form/login/UsernameLoginForm';
+import { AccessCodeLoginForm } from './formElements/login/AccessCodeLoginForm';
+import { ChangeLoginMode } from './formElements/login/ChangeLoginMode';
+import { UsernameLoginForm } from './formElements/login/UsernameLoginForm';
 
 export interface LoginFormContentInterface {
     errormessage?: string;

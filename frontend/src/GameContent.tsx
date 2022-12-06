@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Header from './components/header'
-import { TeamSummaryHeader } from './components/headerelements/TeamSummaryHeader';
+import { TeamSummaryHeader } from './components/headerElements/TeamSummaryHeader';
 import AppMode from './enums/AppModes';
 import { MainGameContent } from './components/MainGameContent';
 import { ApiClient } from './apiclient/ApiClient';
