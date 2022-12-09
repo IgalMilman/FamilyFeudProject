@@ -4,6 +4,7 @@ export enum GameStatus {
     SETTING_TEAMS = 'st',
     DASHBOARD = 'dash',
     QUESTION = 'ques',
+    SURVEY = 'surv',
     ENDING = 'end'
 }
 
@@ -17,6 +18,8 @@ export function GameStatusFromString(input: string): GameStatus {
             return GameStatus.DASHBOARD
         case GameStatus.QUESTION:
             return GameStatus.QUESTION
+        case GameStatus.SURVEY:
+            return GameStatus.SURVEY
         case GameStatus.ENDING:
             return GameStatus.ENDING
 

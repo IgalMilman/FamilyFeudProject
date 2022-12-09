@@ -2,9 +2,6 @@ import { ClientRole } from "../enums/ClientRole";
 import {
   Factory,
   getCsrfToken,
-  sendGetRequestAndRecieveDataObject,
-  sendGetRequestAndRecieveDataArray,
-  sendPutRequestAndReieveAnswer,
 } from "./CommonMethods";
 import { RealAnswer } from "./models/RealAnswer";
 import { APIResponse } from "./models/APIResponse";
@@ -32,6 +29,7 @@ import { SurveyObject } from "./models/createrequests/SurveyObject";
 import { SurveyAnswerObject } from "./models/createrequests/SurveyAnswerObject";
 import { SurveyAnswer } from "./models/survey/SurveyAnswer";
 import { SurveyWithAnswers } from "./models/survey/SurveyWithAnswers";
+import { PlayerListing } from "./models/Player";
 
 export class ApiClient {
   static client: ApiClient;
@@ -322,10 +320,9 @@ export class ApiClient {
   }
 
   public async performActionOnGame(
-    gameId: string,
     message: GameAction
   ): Promise<boolean> {
-    const url: string = this.generateUrl("api_game", gameId);
+    const url: string = this.generateUrl("api_game", this.gameId);
     const response = await fetch(url, {
       method: "PUT",
       headers: this.generateHeaders(),
@@ -342,7 +339,7 @@ export class ApiClient {
     const url: string = this.generateUrlGeneric("api_get_survey", {
       survey_id: surveyId,
     });
-    return await sendGetRequestAndRecieveDataObject(
+    return await this.sendGetRequestAndRecieveDataObject(
       url,
       new Factory<Survey>(Survey)
     );
@@ -353,7 +350,7 @@ export class ApiClient {
       survey_id: surveyId,
       game_id: this.gameId,
     });
-    return await sendGetRequestAndRecieveDataObject(
+    return await this.sendGetRequestAndRecieveDataObject(
       url,
       new Factory<Survey>(Survey)
     );
@@ -361,16 +358,19 @@ export class ApiClient {
 
   public async getSurveySummaries(): Promise<SurveySummary[]> {
     const url: string = this.generateUrlGeneric("api_get_all_surveys", {});
-    return await sendGetRequestAndRecieveDataArray(url, new Factory<SurveySummary>(SurveySummary))
+    return await this.sendGetRequestAndRecieveDataArray(
+      url,
+      new Factory<SurveySummary>(SurveySummary)
+    );
   }
 
   public async getSurveyForGameWithAnswers(
     surveyId: string
   ): Promise<SurveyWithAnswers> {
-    const url: string = this.generateUrlGeneric("api_get_all_surveys", {});
-    return await sendGetRequestAndRecieveDataObject(
+    const url: string = this.generateUrlGeneric("api_get_survey_for_game_with_answers", {game_id: this.gameId, survey_id: surveyId});
+    return await this.sendGetRequestAndRecieveDataObject(
       url,
-      new Factory<Survey>(Survey)
+      new Factory<SurveyWithAnswers>(SurveyWithAnswers)
     );
   }
 
@@ -378,7 +378,7 @@ export class ApiClient {
     surveyData: SurveyObject
   ): Promise<APIResponse<Survey>> {
     const url: string = this.generateUrlGeneric("api_upsert_survey", {});
-    return sendPutRequestAndReieveAnswer(url, surveyData);
+    return this.sendPutRequestAndReieveAnswer(url, surveyData);
   }
 
   public async upsertSurveyAnswerForGame(
@@ -389,7 +389,15 @@ export class ApiClient {
       game_id: this.gameId,
       survey_id: surveyId,
     });
-    return sendPutRequestAndReieveAnswer(url, surveyAnswerData);
+    return this.sendPutRequestAndReieveAnswer(url, surveyAnswerData);
+  }
+
+  public async getPlayerListing(): Promise<PlayerListing> {
+    const url: string = this.generateUrlGeneric("api_get_user_listing", {game_id: this.gameId});
+    return await this.sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<PlayerListing>(PlayerListing)
+    );
   }
 
   private generateGetParameters(params: {
@@ -443,6 +451,67 @@ export class ApiClient {
   private getCsrfToken() {
     return getCsrfToken();
   }
+
+  private async sendGetRequestAndRecieveDataObject<T>(
+    url: string,
+    factory: Factory<T>
+  ): Promise<T> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: this.generateHeaders(),
+    });
+    if (response.status != 200) {
+      console.log(`Could not fetch data. ${response.body}`);
+      return null;
+    }
+    const jsonobject = await response.json();
+    const result: T = Object.assign(factory.getNew(), jsonobject);
+    return result;
+  }
+  
+  private async sendGetRequestAndRecieveDataArray<T>(
+    url: string,
+    factory: Factory<T>
+  ): Promise<T[]> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: this.generateHeaders(),
+    });
+    if (response.status != 200) {
+      console.log(`Could not fetch data. ${response.body}`);
+      return null;
+    }
+    const jsonobject: Array<{}> = await response.json();
+    const result: T[] = jsonobject.map<T>((value) =>
+      Object.assign(factory.getNew(), value)
+    );
+    return result;
+  }
+  
+  private async sendPutRequestAndReieveAnswer<TInput, TOutput>(
+    url: string,
+    data: TInput
+  ): Promise<APIResponse<TOutput>> {
+    const response = await fetch(
+      url,
+      {
+        method: "PUT",
+        headers: this.generateHeaders(),
+        body: JSON.stringify(data),
+      }
+    );
+    if (response.status == 200 || response.status == 403) {
+      const jsonobject = await response.json();
+      const result: APIResponse<TOutput> = Object.assign(
+        new APIResponse<TOutput>(),
+        jsonobject
+      );
+      return result;
+    }
+    console.log(`Could not upsert data. ${response.body}`);
+    return null;
+  }
+  
 
   public static getClient(): ApiClient {
     if (ApiClient.client) {

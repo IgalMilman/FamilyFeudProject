@@ -44,6 +44,7 @@ export const GameContent = (props: { role: string, team: 1 | 2 | undefined, game
   const menuItems: MenuData[] = role == ClientRole.Host ? [
     { 'name': 'Dashboard', 'mode': AppMode.Dashboard },
     { 'name': 'Question selection', 'mode': AppMode.GameSettings },
+    { 'name': 'Survey selection', 'mode': AppMode.SurveySelection },
     { 'name': 'Question mode', 'mode': AppMode.QuestionMode },
     { 'name': 'Host settings', 'mode': undefined, 'additionalClickAction': () => redirect('/host-settings') },
     { 'name': 'Autopoll', 'mode': undefined, 'additionalClickAction': toggleAutoPoll, 'icon': autoPollPeriod ? <CheckIcon /> : <ClearIcon /> }

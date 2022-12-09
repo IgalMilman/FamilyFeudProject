@@ -33,6 +33,9 @@ class Game(models.Model):
     current_question = models.UUIDField(
         "Current question", editable=True, unique=False, null=True, blank=True
     )
+    current_survey = models.UUIDField(
+        "Current survey", editable=True, unique=False, null=True, blank=True
+    )
     title = models.CharField("Game Title", max_length=60)
 
     def get_teams(self, role: RequesterRole) -> dict:
@@ -47,6 +50,7 @@ class Game(models.Model):
             "started": self.started_on,
             "status": self.status,
             "current_question": self.current_question,
+            "current_survey": self.current_survey,
             "teams": self.get_teams(role),
             "active_question": self.get_active_question(role),
             "title": self.title,

@@ -5,7 +5,7 @@ from django.http.request import HttpRequest
 
 from funquizgame.common.common_functions import is_blank
 from funquizgame.common.common_types import GAME_STATUSES
-from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Team
+from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team
 from funquizgame.models.access_code import AccessCode
 
 
@@ -67,7 +67,7 @@ def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict
 
 
 def action_options() -> dict:
-    return {"next_question": set_next_question, "set_status": set_status}
+    return {"next_question": set_next_question, "set_status": set_status, "set_survey": set_survey}
 
 
 def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
@@ -88,6 +88,7 @@ def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
                 real_question.save()
                 RealAnswer.create_real_answers(real_question, question)
             game.current_question = real_question.unid
+            game.current_survey = None
             game.status = GAME_STATUSES.QUESTION.value
             game.save()
             result["status"] = 200
@@ -116,6 +117,9 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
     if status == GAME_STATUSES.QUESTION:
         result["status"] = 401
         result["error"] = "You cannot set the status of the game to question"
+    if status == GAME_STATUSES.SURVEY:
+        result["status"] = 401
+        result["error"] = "You cannot set the status of the game to survey"
     if status == GAME_STATUSES.ENDING:
         AccessCode.close_access_codes(game)
     try:
@@ -128,6 +132,30 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
         logging.error(e)
     result["status"] = 401
     result["error"] = "There was an internal error"
+    result["body"] = body
+    return False
+
+
+def set_survey(game: Game, body: dict, result: dict, role: str) -> bool:
+    if "survey_id" not in body:
+        result["status"] = 401
+        result["error"] = "Survey id was not provided"
+        result["body"] = body
+        return False
+    try:
+        survey_id = body["survey_id"]
+        survey = Survey.objects.get(unid=survey_id)
+        if survey is not None:
+            game.current_question = None
+            game.current_survey = survey.unid
+            game.status = GAME_STATUSES.SURVEY.value
+            game.save()
+            result["status"] = 200
+            return True
+    except Exception as e:
+        logging.error(e)
+    result["status"] = 401
+    result["error"] = f"Could not find the survey with id {survey_id}"
     result["body"] = body
     return False
 

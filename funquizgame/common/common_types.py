@@ -66,6 +66,7 @@ class GAME_STATUSES(Enum):
     SETTING_TEAMS = 'st'
     DASHBOARD = 'dash'
     QUESTION = 'ques'
+    SURVEY = 'surv'
     ENDING = 'end'
 
     @classmethod
@@ -82,6 +83,7 @@ class GAME_STATUSES(Enum):
                 (GAME_STATUSES.SETTING_TEAMS.value, "Setting teams"),
                 (GAME_STATUSES.DASHBOARD.value, "Dashboard"),
                 (GAME_STATUSES.QUESTION.value, "Question"),
+                (GAME_STATUSES.SURVEY.value, "Survey"),
                 (GAME_STATUSES.ENDING.value, "Ending")]
 
 

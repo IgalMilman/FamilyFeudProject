@@ -1,4 +1,8 @@
-type AvailableUrlParameters = 'game_id' | 'survey_id' | 'answer_id' | 'question_id'
+type AvailableUrlParameters =
+  | "game_id"
+  | "survey_id"
+  | "answer_id"
+  | "question_id";
 
 export const GENERIC_URL_MAP_GAME_ENDPOINTS: {
   [key: string]: (value: { [vkey: string]: string }) => string;
@@ -34,6 +38,7 @@ export const GENERIC_URL_MAP_USER_ENDPOINTS: {
   [key: string]: (value: { [vkey: string]: string }) => string;
 } = {
   api_logout: () => `/logout`,
+  api_get_user_listing: (value) => `/api/game/${value["game_id"]}/users`,
 };
 
 export const GENERIC_URL_MAP_SURVEY_ENDPOINTS: {
@@ -44,7 +49,7 @@ export const GENERIC_URL_MAP_SURVEY_ENDPOINTS: {
     `/api/game/${value["game_id"]}/survey/${value["survey_id"]}`,
   api_get_all_surveys: (value) => `/api/survey/all`,
   api_get_survey_for_game_with_answers: (value) =>
-    `/api/game/${value["game_id"]}/survey/${value["survey_id"]}`,
+    `/api/game/${value["game_id"]}/survey/${value["survey_id"]}/answers`,
   api_upsert_survey: (value) => `/api/survey/upsert`,
   api_upsert_answer_to_survey: (value) =>
     `api/game/${value["game_id"]}/survey/${value["survey_id"]}/answer/upsert`,

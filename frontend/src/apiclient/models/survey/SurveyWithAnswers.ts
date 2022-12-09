@@ -1,6 +1,6 @@
-import { SurveyQuestion } from "./SurveyQuestion";
 import { Survey } from "./Survey";
+import { SurveyAnswer } from "./SurveyAnswer";
 
 export class SurveyWithAnswers extends Survey {
-    questions: SurveyQuestion[];
+    answers: SurveyAnswer[];
 }

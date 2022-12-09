@@ -5,6 +5,7 @@ import { BrowseQuestionScreen } from './host/BrowseQuestionsScreen';
 import { CreateGameScreen } from './host/CreateGameScreen';
 import { CreateQuestionScreen } from './host/CreateQuestionScreen';
 import { SelectGameScreen } from './host/SelectGameScreen';
+import { SurveyScreen } from './host/SurveyScreen';
 
 interface HostSettingsContent {
     mode: AppMode;
@@ -21,6 +22,9 @@ export function HostSettingsContent(props: HostSettingsContent): JSX.Element {
             break;
         case AppMode.BrowseQuestions:
             mainElement = <BrowseQuestionScreen />
+            break;
+        case AppMode.SurveyCreation:
+            mainElement = <SurveyScreen />
             break;
         default:
             mainElement = <CreateQuestionScreen />

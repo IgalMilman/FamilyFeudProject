@@ -29,7 +29,7 @@ class SurveyQuestionAnswer(models.Model):
         return {
             'id': self.unid,
             'answer': self.answer,
-            'question_id': self.question.unid
+            'question_id': str(self.question.unid)
         }
 
     @staticmethod
@@ -40,19 +40,20 @@ class SurveyQuestionAnswer(models.Model):
             return None
         result:SurveyQuestionAnswer = None
         if id is None:
-            result = SurveyQuestionAnswer.objects.create(question=survey_question, survey_answer=survey_answer, answer=answer)
+            [result, created] = SurveyQuestionAnswer.objects.get_or_create(question=survey_question, survey_answer=survey_answer)
         else:
             [result, _] = SurveyQuestionAnswer.objects.get_or_create(unid=id, question=survey_question, survey_answer=survey_answer)
-            result.answer = answer
-            result.save()
+        result.answer = answer
+        result.save()
         return result
 
 
     @staticmethod
     def validate_data(data:dict) -> Tuple[bool, List[dict]]:
+        print(data)
         [_, answer] = SurveyQuestionAnswer._extract_data(data)
         errors:List[dict] = []
-        if answer is None or not isinstance(answer, dict):
+        if answer is None:
             errors.append({'answer': 'Answer have to be presented.'})
         return [len(errors) == 0, errors]
             

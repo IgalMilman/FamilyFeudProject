@@ -10,6 +10,7 @@ export class Game {
   viewer_access_code?: string;
   gameStatus: GameStatus;
   current_question: string;
+  current_survey: string;
   active_question: RealQuestion;
   teams: Team[];
 }

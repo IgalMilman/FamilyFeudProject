@@ -24,6 +24,13 @@ def get_survey_api(request: HttpRequest, survey_id):
 
 @login_required(login_url="login")
 @require_http_methods(["GET"])
+def get_survey_for_game_api(request: HttpRequest, gameid, survey_id):
+    result = get_survey(survey_id)
+    return JsonResponse(result, status=result.get("status", 200), safe=False)
+
+
+@login_required(login_url="login")
+@require_http_methods(["GET"])
 def get_all_surveys_api(request: HttpRequest):
     result = get_all_available_surveys(
         role=RequesterRole.get_role_from_request(request), user=request.user

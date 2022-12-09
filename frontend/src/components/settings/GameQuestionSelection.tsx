@@ -24,7 +24,7 @@ export function GameQuestionSelection(props: MainGameContentProps): JSX.Element 
         const action = new GameAction();
         action.action = 'next_question';
         action.questionid = question?.id;
-        ApiClient.getClient().performActionOnGame(props.game?.id, action).then((value => {
+        ApiClient.getClient().performActionOnGame(action).then((value => {
             if (value && props.changeAppMode) {
                 props.changeAppMode(AppMode.QuestionMode);
             }

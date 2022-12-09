@@ -34,7 +34,7 @@ class SurveyAnswer(models.Model):
 
     def json(self) -> dict:
         return {
-            'unid': self.unid,
+            'id': self.unid,
             'created_by': self.created_by.id,
             'game': self.game.unid if self.game else None,
             'answers': self.get_question_answers()
@@ -47,18 +47,20 @@ class SurveyAnswer(models.Model):
             return None
         survey_answer:SurveyAnswer = None
         if id is None:
-            survey_answer = SurveyAnswer.objects.get_or_create(created_by=user, survey=survey, game=game)
+            [survey_answer, _] = SurveyAnswer.objects.get_or_create(created_by=user, survey=survey, game=game)
         else:
             [survey_answer, _] = SurveyAnswer.objects.get_or_create(unid=id)
             survey_answer.save()
+        print([id, answers])
         from .survey_question_answer import SurveyQuestionAnswer
         for question in survey.questions.all():
-            answer_data = answers.get('question_id', None)
+            answer_data = answers.get(str(question.unid), None)
             if answer_data:
-                answer: SurveyQuestionAnswer=SurveyQuestionAnswer.from_json(question, survey)
+                answer: SurveyQuestionAnswer=SurveyQuestionAnswer.from_json(answer_data, survey_answer, question)
                 if answer is None:
                     survey_answer.delete()
                     return None
+        print('created answer object')
         return survey_answer
 
     @staticmethod
