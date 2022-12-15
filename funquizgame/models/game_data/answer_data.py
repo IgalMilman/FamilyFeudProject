@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Tuple
+from typing import List, Dict, Tuple
 
 from django.db import models
 from django.db.models.deletion import CASCADE
@@ -70,7 +70,7 @@ class AnswerData(MultiLanguageField):
         return None
 
     @staticmethod
-    def validate_json(json: Dict) -> Tuple[list[str], int, int, int]:
+    def validate_json(json: Dict) -> Tuple[List[str], int, int, int]:
         textlist = json.get("text", None)
         value = json.get("correct_value", None)
         people = json.get("people_answered", None)
