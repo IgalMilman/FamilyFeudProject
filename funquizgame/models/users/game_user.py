@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
@@ -29,13 +29,13 @@ class GameUser(AbstractUser):
         default=None,
     )
 
-    def json_full(self) -> dict:
-        result: dict = self.json()
+    def json_full(self) -> Dict:
+        result: Dict = self.json()
         result["role"] = self.role
         result["username"] = self.username
         return result
 
-    def json(self) -> dict:
+    def json(self) -> Dict:
         return {
             "id": self.id,
             "first_name": self.first_name,

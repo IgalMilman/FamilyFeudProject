@@ -1,10 +1,13 @@
-from django.db.models.deletion import CASCADE
+from typing import Dict
 
 from django.db import models
+from django.db.models.deletion import CASCADE
+
 from funquizgame.common.common_types import GameQuestionTypes, RequesterRole
+
+from ..game_data.answer_data import AnswerData
 from ..game_data.question_data import QuestionData
 from ..team import Team
-from ..game_data.answer_data import AnswerData
 from .real_data_abstract import RealDataAbstract
 from .real_question import RealQuestion
 
@@ -20,7 +23,7 @@ class RealAnswer(RealDataAbstract):
         "Creation time", auto_now_add=False, null=True, blank=True
     )
 
-    def main_data(self) -> dict:
+    def main_data(self) -> Dict:
         return {
             "id": self.unid,
             "is_shown": self.is_shown,
@@ -31,7 +34,7 @@ class RealAnswer(RealDataAbstract):
             "created_time": self.answer_created,
         }
 
-    def json(self, role: RequesterRole) -> dict:
+    def json(self, role: RequesterRole) -> Dict:
         if role.is_host():
             result = self.main_data()
             if self.answer_data is not None:

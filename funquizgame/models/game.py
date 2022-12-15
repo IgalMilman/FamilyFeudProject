@@ -1,5 +1,5 @@
 import logging
-from typing import Tuple
+from typing import Dict, Tuple
 import uuid
 
 from django.db import models
@@ -39,7 +39,7 @@ class Game(models.Model):
     )
     title = models.CharField("Game Title", max_length=60)
 
-    def get_teams(self, user:GameUser, role: RequesterRole) -> Tuple[dict, bool]:
+    def get_teams(self, user:GameUser, role: RequesterRole) -> Tuple[Dict, bool]:
         teams = []
         is_captain = False
         for sec in self.team_set.all().order_by("number"):
@@ -49,7 +49,7 @@ class Game(models.Model):
             teams.append(data)
         return teams, is_captain
 
-    def json(self, user:GameUser, role: RequesterRole) -> dict:
+    def json(self, user:GameUser, role: RequesterRole) -> Dict:
         [teams, is_captain] = self.get_teams(user, role)
         return {
             "id": self.unid,
@@ -65,7 +65,7 @@ class Game(models.Model):
             "is_captain": is_captain
         }
 
-    def json_short(self, role: RequesterRole) -> dict:
+    def json_short(self, role: RequesterRole) -> Dict:
         if not role.is_host():
             return None
         return {
@@ -85,7 +85,7 @@ class Game(models.Model):
             return None
         return access_code.access_code
 
-    def get_active_question(self, role: RequesterRole) -> dict:
+    def get_active_question(self, role: RequesterRole) -> Dict:
         try:
             from funquizgame.models import RealQuestion
 

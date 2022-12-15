@@ -1,5 +1,6 @@
 import logging
 import uuid
+from typing import Dict, List
 
 from django.db import models
 
@@ -12,13 +13,13 @@ class MultiLanguageField(models.Model):
     def prepare_data(self):
         pass
 
-    def get_all_text(self) -> list:
+    def get_all_text(self) -> List:
         return [text.json() for text in self.textfield_set.all().order_by('sort_order')]
 
-    def json(self, text_field_name: str = 'text') -> dict:
+    def json(self, text_field_name: str = 'text') -> Dict:
         return {'id': self.unid, text_field_name: self.get_all_text()}
 
-    def upsert_text(self, textlist: list) -> list:
+    def upsert_text(self, textlist: List) -> List:
         from funquizgame.models.text_field import TextField
         result = []
         updated_ids = set()

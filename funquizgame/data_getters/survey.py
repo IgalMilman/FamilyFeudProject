@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 from django.db.models.query_utils import Q
 
@@ -7,7 +7,7 @@ from funquizgame.common.common_types import RequesterRole
 from funquizgame.models import Game, GameUser, Survey
 
 
-def get_survey(survey_id: str) -> dict:
+def get_survey(survey_id: str) -> Dict:
     try:
         survey = Survey.objects.get(unid=survey_id)
         if survey is not None:
@@ -28,7 +28,7 @@ def get_survey_with_answers(survey_id: str, game_id: str):
     return {}
 
 
-def get_all_available_surveys(role: RequesterRole, user: GameUser) -> list[dict]:
+def get_all_available_surveys(role: RequesterRole, user: GameUser) -> List[Dict]:
     if not role.is_host():
         return []
     try:

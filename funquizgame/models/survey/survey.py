@@ -1,7 +1,4 @@
-import logging
-import json
-from typing import List, Tuple
-import uuid
+from typing import Dict, List, Tuple
 
 from django.db import models
 from django.db.models.deletion import SET_NULL
@@ -18,21 +15,21 @@ class Survey(MultiLanguageField):
         "Created time", auto_now_add=True, null=False, blank=False
     )
     
-    def json_short(self)->dict:
+    def json_short(self)->Dict:
         return super().json('title')
 
-    def json(self)->dict:
+    def json(self)->Dict:
         result = self.json_short()
         result['questions'] = [question.json() for question in self.questions.all()]
         return result
     
-    def json_with_answers(self, game:Game)->dict:
+    def json_with_answers(self, game:Game)->Dict:
         result = self.json()
         result['answers'] = [answer.json() for answer in self.survey_answers.filter(game=game)]
         return result
 
     @staticmethod
-    def from_json(data:dict, user:GameUser) -> 'Survey':
+    def from_json(data:Dict, user:GameUser) -> 'Survey':
         if user is None:
             return None
         [id, text, questions] = Survey._extract_data(data)
@@ -56,9 +53,9 @@ class Survey(MultiLanguageField):
         return survey
 
     @staticmethod
-    def validate_data(data:dict) -> Tuple[bool, List[dict]]:
+    def validate_data(data:Dict) -> Tuple[bool, List[Dict]]:
         [_, text, questions] = Survey._extract_data(data)
-        errors:List[dict] = []
+        errors:List[Dict] = []
         if questions is None or not isinstance(questions, list) or len(questions) == 0:
             errors.append({'questions': 'Questions have to be presented.'})
         else:
@@ -73,7 +70,7 @@ class Survey(MultiLanguageField):
             
 
     @staticmethod
-    def _extract_data(data:dict) -> Tuple[str, List[str], List[dict]]:
+    def _extract_data(data:Dict) -> Tuple[str, List[str], List[Dict]]:
         if not isinstance(data, dict):
             return [None, None, None]
         return [data.get('id', None), data.get('title', None), data.get('questions', None)]

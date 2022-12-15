@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import uuid
 
 from django.db import models
@@ -25,7 +25,7 @@ class SurveyQuestionAnswer(models.Model):
     )
     answer = models.JSONField(null=False, blank=False, default=dict)
 
-    def json(self) -> dict:
+    def json(self) -> Dict:
         return {
             'id': self.unid,
             'answer': self.answer,
@@ -33,7 +33,7 @@ class SurveyQuestionAnswer(models.Model):
         }
 
     @staticmethod
-    def from_json(data:dict, survey_answer:SurveyAnswer, survey_question:SurveyQuestion) -> 'SurveyQuestionAnswer':
+    def from_json(data:Dict, survey_answer:SurveyAnswer, survey_question:SurveyQuestion) -> 'SurveyQuestionAnswer':
         id = data.get('id', None)
         answer = data.get('answer', None)
         if survey_answer is None or survey_question is None:
@@ -49,14 +49,14 @@ class SurveyQuestionAnswer(models.Model):
 
 
     @staticmethod
-    def validate_data(data:dict) -> Tuple[bool, List[dict]]:
+    def validate_data(data:Dict) -> Tuple[bool, List[Dict]]:
         [_, answer] = SurveyQuestionAnswer._extract_data(data)
-        errors:List[dict] = []
+        errors:List[Dict] = []
         if answer is None:
             errors.append({'answer': 'Answer have to be presented.'})
         return [len(errors) == 0, errors]
             
 
     @staticmethod
-    def _extract_data(data:dict) -> Tuple[str, dict]:
+    def _extract_data(data:Dict) -> Tuple[str, Dict]:
         return [data.get('id', None), data.get('answer', None)]

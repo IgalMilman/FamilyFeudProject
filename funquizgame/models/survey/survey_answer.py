@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import uuid
 
 from django.db import models
@@ -25,14 +25,14 @@ class SurveyAnswer(models.Model):
         Game, null=True, related_name="survey_answers", on_delete=SET_NULL
     )
 
-    def get_question_answers(self) -> dict:
+    def get_question_answers(self) -> Dict:
         result = {}
         for answer in self.answers.all():
             json = answer.json()
             result[json['question_id']] = json
         return result
 
-    def json(self) -> dict:
+    def json(self) -> Dict:
         return {
             'id': self.unid,
             'created_by': self.created_by.id,
@@ -41,7 +41,7 @@ class SurveyAnswer(models.Model):
         }
 
     @staticmethod
-    def from_json(data:dict, user:GameUser, survey:Survey, game:Game) -> 'SurveyAnswer':
+    def from_json(data:Dict, user:GameUser, survey:Survey, game:Game) -> 'SurveyAnswer':
         [id, answers] = SurveyAnswer._extract_data(data)
         if user is None and id is None or game is None or survey is None:
             return None
@@ -62,9 +62,9 @@ class SurveyAnswer(models.Model):
         return survey_answer
 
     @staticmethod
-    def validate_data(data:dict) -> Tuple[bool, List[dict]]:
+    def validate_data(data:Dict) -> Tuple[bool, List[Dict]]:
         [_, answers] = SurveyAnswer._extract_data(data)
-        errors:List[dict] = []
+        errors:List[Dict] = []
         if answers is None or not isinstance(answers, dict):
             errors.append({'answers': 'Answers have to be presented.'})
         else:
@@ -77,5 +77,5 @@ class SurveyAnswer(models.Model):
             
 
     @staticmethod
-    def _extract_data(data:dict) -> Tuple[str, dict[str, dict]]:
+    def _extract_data(data:Dict) -> Tuple[str, Dict[str, Dict]]:
         return [data.get('id', None), data.get('answers', None)]

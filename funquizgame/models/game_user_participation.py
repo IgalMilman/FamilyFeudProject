@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 from uuid import uuid4
 
 from django.conf import settings
@@ -36,14 +36,14 @@ class GameUserParticipation(models.Model):
             self.access_code = generate_access_code(len(self.access_code))
             self.validate_unique(exclude)
     
-    def json(self) -> dict:
+    def json(self) -> Dict:
         return {
             'id': self.id,
             'is_shown': self.is_shown,
             'access_code': self.access_code
         }
     
-    def json_with_user_data(self) -> dict:
+    def json_with_user_data(self) -> Dict:
         result = self.json()
         result['is_disabled'] = self.access_code_is_disabled
         result['user'] = self.user.json()
@@ -112,11 +112,11 @@ class GameUserParticipation(models.Model):
         return game.user_participation.filter(access_code_is_disabled=False)
 
     @staticmethod
-    def get_all_codes_and_users_for_game(game: Game) -> List[dict]:
+    def get_all_codes_and_users_for_game(game: Game) -> List[Dict]:
         if game is None:
             return []
         all_participations = game.user_participation.all()
-        result:List[dict] = []
+        result:List[Dict] = []
         for participation in all_participations:
             result.append(participation.json_with_user_data())
         return result
@@ -126,7 +126,7 @@ class GameUserParticipation(models.Model):
         if game is None:
             return []
         all_participations = game.user_participation.all()
-        result: List[dict] = []
+        result: List[Dict] = []
         for participation in all_participations:
             if participation.user.user_is_active():
                 result.append(participation.user)

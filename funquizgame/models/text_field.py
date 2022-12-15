@@ -1,3 +1,4 @@
+from typing import Dict
 import uuid
 
 from django.db import models
@@ -15,7 +16,7 @@ class TextField(models.Model):
         return self.text
 
     @staticmethod
-    def from_json(json:dict, language_field: MultiLanguageField):
+    def from_json(json:Dict, language_field: MultiLanguageField):
         if 'text' in json:
             [obj, _] = TextField.objects.get_or_create(sort_order=json.get('sort_order', 0), related_object = language_field)
             obj.text = json['text']

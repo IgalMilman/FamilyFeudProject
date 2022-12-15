@@ -1,12 +1,12 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 from funquizgame.common.common_types import GAME_STATUSES, RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.users.game_user import GameUser
 
 
-def get_game(role: RequesterRole, user: GameUser, game_id: str) -> dict:
+def get_game(role: RequesterRole, user: GameUser, game_id: str) -> Dict:
     try:
         game: Game = Game.objects.filter(unid=game_id).first()
         if game is not None:

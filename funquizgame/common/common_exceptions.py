@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 
 
 class ValidationErrorField:
@@ -28,7 +28,7 @@ class ValidationException(Exception):
         else:
             return ''.join(str(val) for val in self.fields_errors)
     
-    def fields_error_json(self)->List[dict]:
+    def fields_error_json(self)->List[Dict]:
         return [erf.json() for erf in self.fields_errors]
 
 

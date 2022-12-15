@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Dict
 
 from django.http.request import HttpRequest
 
@@ -7,7 +8,7 @@ from funquizgame.common.common_types import GAME_STATUSES
 from funquizgame.models import Game, Survey, SurveyAnswer, SurveyQuestion
 
 
-def upsert_survey(request: HttpRequest) -> dict:
+def upsert_survey(request: HttpRequest) -> Dict:
     try:
         body = json.loads(request.body.decode("utf-8"))
         validation_results = Survey.validate_data(body)
@@ -27,7 +28,7 @@ def upsert_survey(request: HttpRequest) -> dict:
     return {"status": 400, "error": "There was an internal error"}
 
 
-def upsert_survey_question(request: HttpRequest, survey_id: str) -> dict:
+def upsert_survey_question(request: HttpRequest, survey_id: str) -> Dict:
     try:
         body = json.loads(request.body.decode("utf-8"))
         survey = Survey.objects.get(unid=survey_id)
@@ -46,7 +47,7 @@ def upsert_survey_question(request: HttpRequest, survey_id: str) -> dict:
     return {"status": 400, "error": "There was an internal error"}
 
 
-def upsert_survey_answer(request: HttpRequest, game_id: str, survey_id: str) -> dict:
+def upsert_survey_answer(request: HttpRequest, game_id: str, survey_id: str) -> Dict:
     try:
         body = json.loads(request.body.decode("utf-8"))
         game = Game.objects.get(unid=game_id)

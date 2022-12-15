@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Dict
 
 from django.http.request import HttpRequest
 
@@ -8,7 +9,7 @@ from funquizgame.common.common_types import GAME_STATUSES
 from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team, GameUserParticipation
 
 
-def create_game(request: HttpRequest, role: str) -> dict:
+def create_game(request: HttpRequest, role: str) -> Dict:
     try:
         body = json.loads(request.body.decode("utf-8"))
         game_name = body.get("title", None)
@@ -25,7 +26,7 @@ def create_game(request: HttpRequest, role: str) -> dict:
     return {"status": 400, "error": "There was an internal error"}
 
 
-def get_or_create_game(request: HttpRequest, role: str) -> dict:
+def get_or_create_game(request: HttpRequest, role: str) -> Dict:
     try:
         games = Game.objects.exclude(status=GAME_STATUSES.ENDING).order_by(
             "-started_on"
@@ -37,7 +38,7 @@ def get_or_create_game(request: HttpRequest, role: str) -> dict:
     return create_game(request, role)
 
 
-def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict:
+def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> Dict:
     result = {}
     try:
         body = json.loads(request.body.decode("utf-8"))
@@ -65,11 +66,11 @@ def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict
     return result
 
 
-def action_options() -> dict:
+def action_options() -> Dict:
     return {"next_question": set_next_question, "set_status": set_status, "set_survey": set_survey}
 
 
-def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
+def set_next_question(game: Game, body: Dict, result: Dict, role: str) -> bool:
     if "questionid" not in body:
         result["status"] = 401
         result["error"] = "Question Id was not provided for next question"
@@ -101,7 +102,7 @@ def set_next_question(game: Game, body: dict, result: dict, role: str) -> bool:
     return False
 
 
-def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
+def set_status(game: Game, body: Dict, result: Dict, role: str) -> bool:
     if "status" not in body:
         result["status"] = 401
         result["error"] = "Status was not provided"
@@ -135,7 +136,7 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
     return False
 
 
-def set_survey(game: Game, body: dict, result: dict, role: str) -> bool:
+def set_survey(game: Game, body: Dict, result: Dict, role: str) -> bool:
     if "survey_id" not in body:
         result["status"] = 401
         result["error"] = "Survey id was not provided"
@@ -159,7 +160,7 @@ def set_survey(game: Game, body: dict, result: dict, role: str) -> bool:
     return False
 
 
-def set_team_name(request: HttpRequest, role: str, game_id, team_number: int) -> dict:
+def set_team_name(request: HttpRequest, role: str, game_id, team_number: int) -> Dict:
     result = {}
     try:
         body = json.loads(request.body.decode("utf-8"))

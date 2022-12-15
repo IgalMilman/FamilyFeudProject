@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import logging
 
 from django.db import models
@@ -26,7 +26,7 @@ class SurveyQuestion(MultiLanguageField):
         return result
 
     @staticmethod
-    def from_json(data:dict, survey:Survey) -> 'SurveyQuestion':
+    def from_json(data:Dict, survey:Survey) -> 'SurveyQuestion':
         [id, qtype, text, priority, parameters] = SurveyQuestion._extract_data(data)
         if survey is None:
             return None
@@ -45,9 +45,9 @@ class SurveyQuestion(MultiLanguageField):
         return question
 
     @staticmethod
-    def validate_data(data:dict) -> Tuple[bool, List[dict]]:
+    def validate_data(data:Dict) -> Tuple[bool, List[Dict]]:
         [id, qtype, text, _, _] = SurveyQuestion._extract_data(data)
-        errors: List[dict] = []
+        errors: List[Dict] = []
         if text is None or not isinstance(text, list) or len(text) == 0:
             errors.append({'text': 'Question text must be presented'})
         if (qtype is None or qtype not in SurveyQuestionTypes.get_valid_values()) and id is None:
@@ -56,7 +56,7 @@ class SurveyQuestion(MultiLanguageField):
             
 
     @staticmethod
-    def _extract_data(data:dict) -> Tuple[str, int, List[str], int, dict]:
+    def _extract_data(data:Dict) -> Tuple[str, int, List[str], int, Dict]:
         if not isinstance(data, dict):
             return [None, None, None, 0, {}]
         return [data.get('id', None),

@@ -1,7 +1,10 @@
-from django.db.models.deletion import CASCADE
+from typing import Dict, List
 
 from django.db import models
+from django.db.models.deletion import CASCADE
+
 from funquizgame.common.common_types import RequesterRole
+
 from ..game_data.question_data import QuestionData
 from .real_data_abstract import RealDataAbstract
 
@@ -15,13 +18,13 @@ class RealQuestion(RealDataAbstract):
         "Starting time", auto_now_add=False, null=True, blank=True
     )
 
-    def get_all_real_answers(self, role: RequesterRole) -> list:
+    def get_all_real_answers(self, role: RequesterRole) -> List:
         result = []
         for sec in self.realanswer_set.all():
             result.append(sec)
         return result
 
-    def get_all_real_answers_json(self, role: RequesterRole) -> list:
+    def get_all_real_answers_json(self, role: RequesterRole) -> List:
         result = []
         question_price = {}
         for sec in self.realanswer_set.all():
@@ -40,7 +43,7 @@ class RealQuestion(RealDataAbstract):
         )
         return result
 
-    def get_question_data(self, role: RequesterRole) -> dict:
+    def get_question_data(self, role: RequesterRole) -> Dict:
         if role.is_host():
             return self.question_data.json(role)
         if self.is_shown:
@@ -49,7 +52,7 @@ class RealQuestion(RealDataAbstract):
             )
         return None
 
-    def json(self, role: RequesterRole) -> dict:
+    def json(self, role: RequesterRole) -> Dict:
         result = {
             "id": self.unid,
             "is_shown": self.is_shown,

@@ -1,5 +1,5 @@
 import logging
-from typing import Tuple
+from typing import Dict, Tuple
 
 from django.db import models
 from django.db.models.deletion import CASCADE
@@ -23,13 +23,13 @@ class AnswerData(MultiLanguageField):
         QuestionData, on_delete=CASCADE, null=False, db_index=True
     )
 
-    def get_answer(self, role: RequesterRole) -> dict:
+    def get_answer(self, role: RequesterRole) -> Dict:
         if role.is_participant():
             return None
         else:
             return self
 
-    def json(self, role: RequesterRole) -> dict:
+    def json(self, role: RequesterRole) -> Dict:
         if role.is_participant():
             return super().json()
         else:
@@ -40,7 +40,7 @@ class AnswerData(MultiLanguageField):
             return result
 
     @staticmethod
-    def from_json(json: dict, question: QuestionData):
+    def from_json(json: Dict, question: QuestionData):
         id = json.get("id", None)
         textlist, value, people, points = AnswerData.validate_json(json)
         try:
@@ -70,7 +70,7 @@ class AnswerData(MultiLanguageField):
         return None
 
     @staticmethod
-    def validate_json(json: dict) -> Tuple[list[str], int, int, int]:
+    def validate_json(json: Dict) -> Tuple[list[str], int, int, int]:
         textlist = json.get("text", None)
         value = json.get("correct_value", None)
         people = json.get("people_answered", None)

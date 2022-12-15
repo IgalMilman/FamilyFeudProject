@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime
+from typing import Dict
 
 import pytz
 from django.http.request import HttpRequest
@@ -13,7 +14,7 @@ from funquizgame.models import (AnswerData, GameUser, QuestionData, RealAnswer,
 
 def give_answer(
     request: HttpRequest, role: RequesterRole, game_id, questionid: str
-) -> dict:
+) -> Dict:
     result = {}
     try:
         body = json.loads(request.body.decode("utf-8"))
@@ -69,7 +70,7 @@ def give_answer(
 
 def reveal_question(
     request: HttpRequest, role: RequesterRole, game_id, questionid: str
-) -> dict:
+) -> Dict:
     result = {}
     try:
         question = RealQuestion.objects.get(unid=questionid)
@@ -90,7 +91,7 @@ def reveal_question(
 
 def complete_question(
     request: HttpRequest, role: RequesterRole, game_id, questionid: str
-) -> dict:
+) -> Dict:
     result = {}
     try:
         question: RealQuestion = RealQuestion.objects.get(unid=questionid)
@@ -111,7 +112,7 @@ def complete_question(
 
 def reveal_answer(
     request: HttpRequest, role: RequesterRole, game_id, answerid: str
-) -> dict:
+) -> Dict:
     result = {}
     try:
         answer: RealAnswer = RealAnswer.objects.get(unid=answerid)
@@ -136,9 +137,9 @@ def reveal_answer(
     return result
 
 
-def upsert_question_handler(request: HttpRequest) -> dict:
+def upsert_question_handler(request: HttpRequest) -> Dict:
     try:
-        body: dict = json.loads(request.body.decode("utf-8"))
+        body: Dict = json.loads(request.body.decode("utf-8"))
         return upsert_question_from_json(body, request.user)
     except ValidationException as e:
         return {
@@ -151,7 +152,7 @@ def upsert_question_handler(request: HttpRequest) -> dict:
     return {"status": 403, "error": "Could not create/update the question"}
 
 
-def upsert_question_from_json(question_json: dict, user: GameUser) -> dict:
+def upsert_question_from_json(question_json: Dict, user: GameUser) -> Dict:
     result = QuestionData.from_json(question_json, user)
     if result is None:
         return {
