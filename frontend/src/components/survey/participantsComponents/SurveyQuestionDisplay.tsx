@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { PlayerListing } from '../../../apiclient/models/Player';
+import { PlayerByTeamAllocation } from '../../../apiclient/models/Player';
 import { SurveyQuestion } from '../../../apiclient/models/survey/SurveyQuestion';
 import { SurveyQuestionType } from '../../../enums/SurveyQuestionType';
 import { AllLanguageOutput } from '../../common/AllLanguageOutput';
+import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow';
 import { SurveyQuestionMultipleLinesEntry } from './SurveyQuestionMultipleLinesEntry';
 import { SurveyQuestionNumberChoice } from './SurveyQuestionNumberChoice';
@@ -14,15 +15,14 @@ interface SurveyQuestionDisplayProps {
     question: SurveyQuestion;
     answer: string | number;
     setAnswer: (questionId: string, value: string | number) => void;
-    playerListing: PlayerListing;
+    playerAllocation: PlayerByTeamAllocation;
 }
 
 export const SurveyQuestionDisplay = (props: SurveyQuestionDisplayProps): JSX.Element => {
-    const setAnswerString = (event: { target: { value: string; }; }) => {
-        props.setAnswer(props.question.id, event.target.value);
+    const setAnswerString = (value: string) => {
+        props.setAnswer(props.question.id, value);
     }
-    const setAnswerNumber = (event: { target: { value: string; }; }) => {
-        const value: number = parseInt(event.target.value)
+    const setAnswerNumber = (value: number) => {
         props.setAnswer(props.question.id, value);
     }
     let element: JSX.Element = null;
@@ -51,8 +51,8 @@ export const SurveyQuestionDisplay = (props: SurveyQuestionDisplayProps): JSX.El
                 id={props.question.id}
                 questionParameters={props.question?.parameters}
                 answer={props.answer as string}
-                setAnswer={setAnswerString}
-                playerListing={props.playerListing}
+                setAnswer={value => props.setAnswer(props.question.id, value)}
+                playerAllocation={props.playerAllocation}
             />
             break
         case SurveyQuestionType.NumberChoice:
@@ -76,8 +76,14 @@ export const SurveyQuestionDisplay = (props: SurveyQuestionDisplayProps): JSX.El
     }
     if (element) {
         return <AutoScaleMaterialRow>
-            <AllLanguageOutput text={props.question?.text} />
-            {element}
+            <AutoScaleMaterialColumn>
+                <AutoScaleMaterialRow>
+                    <AllLanguageOutput text={props.question?.text} />
+                </AutoScaleMaterialRow>
+                <AutoScaleMaterialRow>
+                    {element}
+                </AutoScaleMaterialRow>
+            </AutoScaleMaterialColumn>
         </AutoScaleMaterialRow>
     }
     return <></>

@@ -1,9 +1,9 @@
 export enum SurveyQuestionType {
-  OneLineTextEntry = 1,
-  MultilineTextEntry = 2,
-  PlayerChoice = 3,
+  NumberEntry = 1,
+  OneLineTextEntry = 2,
+  MultilineTextEntry = 3,
   NumberChoice = 4,
-  NumberEntry = 5,
+  PlayerChoice = 5,
 }
 
 export const ALL_QUESTION_TYPE_VALUES: number[] = [1, 2, 3, 4, 5];
@@ -13,23 +13,25 @@ export function SurveyQuestionTypeFromNumber(
 ): SurveyQuestionType {
   switch (input) {
     case 1:
-      return SurveyQuestionType.OneLineTextEntry;
+      return SurveyQuestionType.NumberEntry;
     case 2:
-      return SurveyQuestionType.MultilineTextEntry;
+      return SurveyQuestionType.OneLineTextEntry;
     case 3:
-      return SurveyQuestionType.PlayerChoice;
+      return SurveyQuestionType.MultilineTextEntry;
     case 4:
       return SurveyQuestionType.NumberChoice;
     case 5:
-      return SurveyQuestionType.NumberEntry;
+      return SurveyQuestionType.PlayerChoice;
   }
   return null;
 }
 
 const SurveyQuestionTypeNumberToTextMap: { [key: number]: string } = {
-  1: "Number",
-  2: "Button",
-  3: "Fam Feud",
+  1: "Number entry",
+  2: "One line answer",
+  3: "Multi line answer",
+  4: "Number choice answer",
+  5: "Player choice answer"
 };
 
 export function SurveyQuestionTextFromNumber(input?: number): string {
@@ -37,5 +39,5 @@ export function SurveyQuestionTextFromNumber(input?: number): string {
 }
 
 export function SurveyQuestionIsNumeric(input: number): boolean {
-  return input == 4 || input == 5;
+  return input == 1 || input == 4;
 }

@@ -5,8 +5,7 @@ from django.http.request import HttpRequest
 
 from funquizgame.common.common_functions import is_blank
 from funquizgame.common.common_types import GAME_STATUSES
-from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team
-from funquizgame.models.access_code import AccessCode
+from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team, GameUserParticipation
 
 
 def create_game(request: HttpRequest, role: str) -> dict:
@@ -18,7 +17,7 @@ def create_game(request: HttpRequest, role: str) -> dict:
         game: Game = Game.objects.create(title=game_name, created_by=request.user)
         Team.objects.get_or_create(game=game, number=1)
         Team.objects.get_or_create(game=game, number=2)
-        AccessCode.get_or_create_codes_for_game(game)
+        GameUserParticipation.get_or_create_codes_for_game_for_default_users(game)
         result = {"data": game.json_short(role), "status": 200}
         return result
     except Exception as e:
@@ -32,7 +31,7 @@ def get_or_create_game(request: HttpRequest, role: str) -> dict:
             "-started_on"
         )
         if games is not None and len(games) > 0:
-            return {"game": games.first().json(role), "status": 200}
+            return {"game": games.first().json(request.user, role), "status": 200}
     except Exception as e:
         logging.error(e)
     return create_game(request, role)
@@ -59,7 +58,7 @@ def perform_action_on_game(request: HttpRequest, gameid: str, role: str) -> dict
             result["status"] = 404
             return result
         actions[action](game, body, result, role)
-        result["game"] = game.json(role)
+        result["game"] = game.json(request.user, role)
     except Exception as e:
         logging.error(e)
         logging.error(request.body)
@@ -121,7 +120,7 @@ def set_status(game: Game, body: dict, result: dict, role: str) -> bool:
         result["status"] = 401
         result["error"] = "You cannot set the status of the game to survey"
     if status == GAME_STATUSES.ENDING:
-        AccessCode.close_access_codes(game)
+        GameUserParticipation.close_access_codes(game)
     try:
         game.status = status.value
         game.current_question = None

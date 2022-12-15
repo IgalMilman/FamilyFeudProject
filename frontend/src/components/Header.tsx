@@ -23,7 +23,7 @@ export default function Header(props: HeaderProps): JSX.Element {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                    <Menu items={props.menuItems} currentMode={props.currentMode} currentRole={props.currentRole} status={props.status} changeModeAction={props.changeModeAction} />
+                    <Menu items={props.menuItems} {...props} />
                     {props.beforeTitleElement}
                     <Typography textAlign='center' variant="h3" component="div" sx={{ flexGrow: 1 }}>
                         {props.title ? props.title : props.titleProvider ? props.titleProvider() : ""}
@@ -33,4 +33,4 @@ export default function Header(props: HeaderProps): JSX.Element {
             </AppBar>
         </Box>
     );
-}
+} 

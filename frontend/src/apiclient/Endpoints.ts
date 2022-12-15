@@ -38,7 +38,14 @@ export const GENERIC_URL_MAP_USER_ENDPOINTS: {
   [key: string]: (value: { [vkey: string]: string }) => string;
 } = {
   api_logout: () => `/logout`,
-  api_get_user_listing: (value) => `/api/game/${value["game_id"]}/users`,
+  api_get_user_listing: (value) => `/api/game/${value["game_id"]}/users/active`,
+  api_generate_users_and_access_codes: (value) => `/api/game/${value["game_id"]}/users/generate/${value['number']}`,
+  api_get_available_access_codes: (value) => `/api/game/${value["game_id"]}/access_codes`,
+  api_get_all_users_and_access_codes_for_game: (value) => `/api/game/${value["game_id"]}/users/all`,
+  api_get_all_active_users_for_game: (value) => `/api/game/${value["game_id"]}/users/active`,
+  api_make_user_captain: (value) => `/api/game/${value["game_id"]}/users/${value['user_id']}/make_captain`,
+  api_deactivate_user: (value) => `/api/users/${value['user_id']}/deactivate`,
+  api_assign_user_to_team: (value) => `/api/game/${value["game_id"]}/team/${value['team_id']}/assign_user/${value['user_id']}`,
 };
 
 export const GENERIC_URL_MAP_SURVEY_ENDPOINTS: {

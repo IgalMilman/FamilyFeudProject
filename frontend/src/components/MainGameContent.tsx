@@ -6,6 +6,7 @@ import { MainView } from './common/MainView';
 import { GameContentDashboard } from './GameContentDashboard';
 import { GameContentScreen } from './GameContentScreen';
 import { GameSurveySelection } from './settings/GameSurveySelection';
+import { GameUserSetupScreen } from './settings/GameUserSetupScreen';
 
 export function MainGameContent(props: MainGameContentProps): JSX.Element {
     let mainElement = undefined;
@@ -18,6 +19,9 @@ export function MainGameContent(props: MainGameContentProps): JSX.Element {
             break;
         case AppMode.SurveySelection:
             mainElement = <GameSurveySelection {...props} />
+            break;
+        case AppMode.UserSetup:
+            mainElement = <GameUserSetupScreen {...props} />
             break;
         default:
             mainElement = <GameContentScreen {...props} />

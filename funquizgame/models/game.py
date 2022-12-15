@@ -1,4 +1,5 @@
 import logging
+from typing import Tuple
 import uuid
 
 from django.db import models
@@ -38,23 +39,30 @@ class Game(models.Model):
     )
     title = models.CharField("Game Title", max_length=60)
 
-    def get_teams(self, role: RequesterRole) -> dict:
-        result = []
+    def get_teams(self, user:GameUser, role: RequesterRole) -> Tuple[dict, bool]:
+        teams = []
+        is_captain = False
         for sec in self.team_set.all().order_by("number"):
-            result.append(sec.json(role))
-        return result
+            data = sec.json(role)
+            data['captain'] = sec.captain == user
+            is_captain = is_captain or (sec.captain == user)
+            teams.append(data)
+        return teams, is_captain
 
-    def json(self, role: RequesterRole) -> dict:
+    def json(self, user:GameUser, role: RequesterRole) -> dict:
+        [teams, is_captain] = self.get_teams(user, role)
         return {
             "id": self.unid,
             "started": self.started_on,
             "status": self.status,
             "current_question": self.current_question,
             "current_survey": self.current_survey,
-            "teams": self.get_teams(role),
+            "teams": teams,
             "active_question": self.get_active_question(role),
             "title": self.title,
             "viewer_access_code": self.get_access_code_for_viewer(),
+            "team_on": user.team,
+            "is_captain": is_captain
         }
 
     def json_short(self, role: RequesterRole) -> dict:
@@ -68,9 +76,9 @@ class Game(models.Model):
         }
 
     def get_access_code_for_viewer(self) -> str:
-        from funquizgame.models import AccessCode
+        from funquizgame.models import GameUserParticipation
 
-        access_code: AccessCode = AccessCode.get_or_create_code_for_game_and_user(
+        access_code: GameUserParticipation = GameUserParticipation.get_or_create_code_for_game_and_user(
             self, GameUser.get_viewer_user()
         )
         if access_code is None:

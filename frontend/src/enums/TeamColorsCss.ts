@@ -12,6 +12,20 @@ export function getBackgroundCssClassForTeam(
   return undefined;
 }
 
+export function getBorderCssClassForTeam(
+  teamnumber: 1 | 2 | undefined | null
+): string {
+  if (teamnumber) {
+    if (teamnumber == 1) {
+      return "team1border";
+    }
+    if (teamnumber == 2) {
+      return "team2border";
+    }
+  }
+  return undefined;
+}
+
 export function getBackgroundColorForTeam(
     teamnumber: 1| 2|undefined|null
 ){

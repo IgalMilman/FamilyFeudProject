@@ -12,5 +12,7 @@ export class Game {
   current_question: string;
   current_survey: string;
   active_question: RealQuestion;
+  is_captain?: boolean;
+  team_on?: 1 | 2;
   teams: Team[];
 }

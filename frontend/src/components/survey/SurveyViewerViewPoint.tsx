@@ -22,6 +22,6 @@ export const SurveyViewerViewPoint = (props: SurveyViewerViewPointProps): JSX.El
     );
 
     return <AutoScaleMaterialColumn>
-        <AllLanguageOutput text={survey.title} />
+        {survey?.title && <AllLanguageOutput text={survey.title} />}
     </AutoScaleMaterialColumn>
 }

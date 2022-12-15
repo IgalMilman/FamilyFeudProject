@@ -30,6 +30,11 @@ import { SurveyAnswerObject } from "./models/createrequests/SurveyAnswerObject";
 import { SurveyAnswer } from "./models/survey/SurveyAnswer";
 import { SurveyWithAnswers } from "./models/survey/SurveyWithAnswers";
 import { PlayerListing } from "./models/Player";
+import { AccessCode } from "./models/AccessCode";
+
+declare global{
+  var apiClient: any;
+}
 
 export class ApiClient {
   static client: ApiClient;
@@ -74,6 +79,10 @@ export class ApiClient {
   constructor(role: ClientRole, gameId: string | undefined = undefined) {
     this.role = role;
     this.gameId = gameId;
+    if (role == ClientRole.Host) {
+      var apiClient:ApiClient = this;
+      globalThis.apiClient = apiClient;
+    }
   }
 
   public async getGameStatus(): Promise<Game> {
@@ -348,7 +357,6 @@ export class ApiClient {
   public async getSurveyForGame(surveyId: string): Promise<Survey> {
     const url: string = this.generateUrlGeneric("api_get_survey_for_game", {
       survey_id: surveyId,
-      game_id: this.gameId,
     });
     return await this.sendGetRequestAndRecieveDataObject(
       url,
@@ -367,7 +375,9 @@ export class ApiClient {
   public async getSurveyForGameWithAnswers(
     surveyId: string
   ): Promise<SurveyWithAnswers> {
-    const url: string = this.generateUrlGeneric("api_get_survey_for_game_with_answers", {game_id: this.gameId, survey_id: surveyId});
+    const url: string = this.generateUrlGeneric("api_get_survey_for_game_with_answers", {
+      survey_id: surveyId
+    });
     return await this.sendGetRequestAndRecieveDataObject(
       url,
       new Factory<SurveyWithAnswers>(SurveyWithAnswers)
@@ -386,14 +396,61 @@ export class ApiClient {
     surveyAnswerData: SurveyAnswerObject
   ): Promise<APIResponse<SurveyAnswer>> {
     const url: string = this.generateUrlGeneric("api_upsert_answer_to_survey", {
-      game_id: this.gameId,
       survey_id: surveyId,
     });
     return this.sendPutRequestAndReieveAnswer(url, surveyAnswerData);
   }
 
+  public async assignUserToTeam(
+    userId: number,
+    team: number,
+  ):Promise<boolean> {
+    const url: string = this.generateUrlGeneric("api_assign_user_to_team", {
+      "user_id":userId.toString(),
+      "team_id":team.toString(),
+    });
+    return this.sendGetRequest(url);
+  }
+
+  public async makeUserCaptain(
+    userId: number,
+  ): Promise<boolean> {
+    const url: string = this.generateUrlGeneric("api_make_user_captain", {
+      "user_id":userId.toString(),
+    });
+    return this.sendGetRequest(url);
+  }
+
+  public async deactivateUser(
+    userId: number,
+  ): Promise<boolean> {
+    const url: string = this.generateUrlGeneric("api_deactivate_user", {
+      "user_id":userId.toString(),
+    });
+    return this.sendGetRequest(url);
+  }
+
+  public async generatePlayers(
+    number: number,
+  ): Promise<AccessCode[]> {
+    const url: string = this.generateUrlGeneric("api_generate_users_and_access_codes", {
+      "number":number.toString(),
+    });
+    return this.sendGetRequestAndRecieveDataArray(url, new Factory<AccessCode>(AccessCode));    
+  }
+
+  public async getAvailableAccessCodes(): Promise<AccessCode[]> {
+    const url: string = this.generateUrlGeneric("api_get_available_access_codes", {});
+    return this.sendGetRequestAndRecieveDataArray(url, new Factory<AccessCode>(AccessCode));      
+  }
+
+  public async getAllAccessCodesAndUsers(): Promise<AccessCode[]> {
+    const url: string = this.generateUrlGeneric("api_get_all_users_and_access_codes_for_game", {});
+    return this.sendGetRequestAndRecieveDataArray(url, new Factory<AccessCode>(AccessCode));      
+  }
+
   public async getPlayerListing(): Promise<PlayerListing> {
-    const url: string = this.generateUrlGeneric("api_get_user_listing", {game_id: this.gameId});
+    const url: string = this.generateUrlGeneric("api_get_user_listing", {});
     return await this.sendGetRequestAndRecieveDataObject(
       url,
       new Factory<PlayerListing>(PlayerListing)
@@ -431,6 +488,9 @@ export class ApiClient {
     urlname: string,
     parameters: { [vkey: string]: string }
   ): string {
+    if (!('game_id' in parameters)) {
+      parameters['game_id'] = this.gameId;
+    }
     const result = this.urlMapGeneric[urlname](parameters);
     return result;
   }
@@ -450,6 +510,20 @@ export class ApiClient {
 
   private getCsrfToken() {
     return getCsrfToken();
+  }
+
+  private async sendGetRequest(
+    url: string
+  ): Promise<boolean> {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: this.generateHeaders(),
+    });
+    if (response.status != 200) {
+      console.log(`Could not fetch data. ${response.body}`);
+      return false;
+    }
+    return true;
   }
 
   private async sendGetRequestAndRecieveDataObject<T>(

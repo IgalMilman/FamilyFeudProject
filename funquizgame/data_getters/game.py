@@ -1,7 +1,6 @@
 import logging
 from typing import List
 
-from django.db.models.query_utils import Q
 from funquizgame.common.common_types import GAME_STATUSES, RequesterRole
 from funquizgame.models.game import Game
 from funquizgame.models.users.game_user import GameUser
@@ -13,7 +12,7 @@ def get_game(role: RequesterRole, user: GameUser, game_id: str) -> dict:
         if game is not None:
             if role.is_host() and game.created_by != user:
                 role = RequesterRole.VIEWER
-            return {"data": game.json(role), "status": 200}
+            return {"data": game.json(user, role), "status": 200}
     except Exception as e:
         logging.error(e)
     return {"data": None, "status": 404, "error": "Could not find the game"}

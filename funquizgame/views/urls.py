@@ -8,7 +8,9 @@ views_urlpatterns = [
     path('', pages.homepage, name=''),
     path('', pages.homepage, name='homepage'),
     path('login', pages.login_page, name='login'),
+    path('user_data', pages.user_data, name='user_data'),
     
+    path('user/activate', authentication.activate_user, name='activate_user'),
     path('login/accesscode', authentication.authenticate_user_access_code, name='login_access_code'),
     path('login/username', authentication.authenticate_user_username, name='login_username'),
     path('logout', authentication.logout_request, name='logout'),

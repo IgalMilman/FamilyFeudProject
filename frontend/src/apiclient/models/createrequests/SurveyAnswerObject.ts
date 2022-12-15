@@ -31,6 +31,9 @@ export class SurveyAnswerObject {
   }
 
   public static forSurvey(survey:Survey): SurveyAnswerObject {
+    if (!survey) {
+      return null;
+    }
     const result: SurveyAnswerObject = new SurveyAnswerObject();
     if (survey.questions) {
       for(const question of survey.questions) {

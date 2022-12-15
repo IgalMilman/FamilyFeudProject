@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { MainView } from './components/common/MainView';
-import Header from './components/header'
+import Header from './components/Header'
 import { LoginFormContent, LoginFormContentInterface } from './components/LoginFormContent';
 import AppMode from './enums/AppModes';
 import { ClientRole } from './enums/ClientRole';
@@ -12,6 +12,7 @@ export const LoginForm = (props: LoginFormContentInterface): JSX.Element => {
             menuItems={[]}
             currentMode={AppMode.Login}
             currentRole={ClientRole.Undefined}
+            realRole={ClientRole.Undefined}
             status={GameStatus.UNDEFINED}
             title={'Please login to a game'}
             changeModeAction={(): void => {

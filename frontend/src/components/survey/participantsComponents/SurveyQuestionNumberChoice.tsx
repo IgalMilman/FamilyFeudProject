@@ -7,7 +7,7 @@ interface SurveyQuestionNumberChoiceProps {
     id: string;
     questionParameters: SurveyQuestionParameters;
     answer: number;
-    setAnswer: (event: { target: { value: string; }; }) => void;
+    setAnswer: (value: number) => void;
 }
 
 export const SurveyQuestionNumberChoice = (props: SurveyQuestionNumberChoiceProps): JSX.Element => {

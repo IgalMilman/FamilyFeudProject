@@ -16,9 +16,9 @@ const GetText = (props: SurveyTableQuestionCellProps): string => {
             return props.value?.toString();
         case (SurveyQuestionType.PlayerChoice):
             if ((props.value as any) instanceof String)
-                return props.playerList[parseInt(props.value as string)]?.name;
+                return props.playerList[parseInt(props.value as string)]?.first_name;
             else 
-                return props.playerList[props.value as number]?.name;
+                return props.playerList[props.value as number]?.first_name;
     }
     return props.value?.toString();
 }

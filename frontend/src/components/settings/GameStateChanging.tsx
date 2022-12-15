@@ -26,6 +26,7 @@ export function GameStateChanging(props: MainGameContentProps): JSX.Element {
                     <MenuItem value={GameStatus.BEGINNING}>Beginning</MenuItem>
                     <MenuItem value={GameStatus.QUESTION}>Question (Do not set directly)</MenuItem>
                     <MenuItem value={GameStatus.SURVEY}>Survey (Do not set directly)</MenuItem>
+                    <MenuItem value={GameStatus.CHOOSING_TEAMS}>Choosing teams</MenuItem>
                     <MenuItem value={GameStatus.SETTING_TEAMS}>Setting teams</MenuItem>
                     <MenuItem value={GameStatus.DASHBOARD}>Dashboard</MenuItem>
                     <MenuItem value={GameStatus.ENDING}>End</MenuItem>

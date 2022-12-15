@@ -3,9 +3,10 @@
       "outDir": "./assets/",
       "noImplicitAny": true,
       "module": "es6",
-      "target": "es5",
+      "target": "ES6",
       "jsx": "react",
       "allowJs": true,
-      "moduleResolution": "node"
+      "moduleResolution": "node",
+      "forceConsistentCasingInFileNames": true
     }
   }

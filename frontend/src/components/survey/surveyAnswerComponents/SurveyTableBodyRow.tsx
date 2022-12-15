@@ -14,7 +14,7 @@ interface SurveyTableBodyRowProps {
 export const SurveyTableBodyRow = (props: SurveyTableBodyRowProps): JSX.Element => {
     return <TableRow>
         <TableCell>
-            {(props.playerList && props.playerList[props.surveyAnswer.created_by]?.name) || props.surveyAnswer.created_by}
+            {(props.playerList && props.playerList[props.surveyAnswer.created_by]?.first_name) || props.surveyAnswer.created_by}
         </TableCell>
         {
             props.questionList?.map(

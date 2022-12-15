@@ -26,8 +26,11 @@ export const SurveyAnswersViewHost = (props: SurveyAnswersViewHostProps): JSX.El
                     ApiClient.getClient().getPlayerListing().then(
                         value => {
                             const result: { [playerId: number]: Player } = {};
-                            value?.my?.forEach((player) => { result[player.id] = player })
-                            value?.opposing?.forEach((player) => { result[player.id] = player })
+                            if (value?.teams){
+                                for(const teamId in value.teams) {
+                                    value.teams[teamId].forEach((player)=>{result[player.id] = player});
+                                }
+                            }
                             result[value?.self?.id] = value?.self;
                             setPlayerList(result);
                         }

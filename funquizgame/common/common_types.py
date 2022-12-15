@@ -7,12 +7,16 @@ class RequesterRole(Enum):
     HOST = "ht"
     VIEWER = "vw"
     PARTICIPANT = "pt"
+    VIEWER_PARTICIPANT = "vp"
 
     def is_host(self) -> bool:
         return self is RequesterRole.HOST
 
     def is_participant(self) -> bool:
         return self is RequesterRole.PARTICIPANT
+    
+    def is_viewer_participant(self) -> bool:
+        return self is RequesterRole.VIEWER_PARTICIPANT
 
     @classmethod
     def has_value(cls, value) -> bool:
@@ -26,7 +30,8 @@ class RequesterRole(Enum):
     def get_valid_choices():
         return [(RequesterRole.HOST.value, "Host"),
                 (RequesterRole.VIEWER.value, "Viewer"),
-                (RequesterRole.PARTICIPANT.value, "Participant")]
+                (RequesterRole.PARTICIPANT.value, "Participant"),
+                (RequesterRole.VIEWER_PARTICIPANT.value, "Viewer participant")]
 
     @classmethod
     def get_role_from_request(cls, request: HttpRequest) -> 'RequesterRole':
@@ -37,8 +42,16 @@ class RequesterRole(Enum):
             return cls(role)
         role = request.GET.get('role', 'vw')
         if cls.has_value(role):
+            return cls(role)
+        return cls.VIEWER
+
+    @classmethod
+    def get_role_for_user(cls, user: 'GameUser') -> 'RequesterRole':
+        if user is None:
             return cls.VIEWER
-        return cls(role)
+        if cls.has_value(user.role):
+            return cls(user.role)
+        return cls.VIEWER
 
 
 class GameQuestionTypes(IntEnum):
@@ -64,6 +77,7 @@ class GameQuestionTypes(IntEnum):
 class GAME_STATUSES(Enum):
     BEGINNING = 'beg'
     SETTING_TEAMS = 'st'
+    CHOOSING_TEAMS = 'ct'
     DASHBOARD = 'dash'
     QUESTION = 'ques'
     SURVEY = 'surv'
@@ -81,6 +95,7 @@ class GAME_STATUSES(Enum):
     def get_valid_choices():
         return [(GAME_STATUSES.BEGINNING.value, "Beginning"),
                 (GAME_STATUSES.SETTING_TEAMS.value, "Setting teams"),
+                (GAME_STATUSES.CHOOSING_TEAMS.value, "Choosing teams"),
                 (GAME_STATUSES.DASHBOARD.value, "Dashboard"),
                 (GAME_STATUSES.QUESTION.value, "Question"),
                 (GAME_STATUSES.SURVEY.value, "Survey"),

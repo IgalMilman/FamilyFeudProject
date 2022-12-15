@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='Created time')),
-                ('access_code', models.CharField(default=funquizgame.models.access_code.default_access_code, max_length=15, verbose_name='Access code')),
+                ('access_code', models.CharField(default=funquizgame.models.game_user_participation.default_access_code, max_length=15, verbose_name='Access code')),
                 ('is_shown', models.BooleanField(default=True, verbose_name='Is shown')),
                 ('is_deleted', models.BooleanField(default=False, verbose_name='Is deleted')),
                 ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_access_code', to='funquizgame.game')),

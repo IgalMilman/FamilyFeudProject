@@ -3,6 +3,7 @@ from django.urls import path
 from . import game_api
 from . import question_api
 from . import survey_api
+from . import user_api
 
 api_urlpatterns = [
 
@@ -31,4 +32,14 @@ api_urlpatterns = [
     path('api/game/<uuid:gameid>/survey/<uuid:survey_id>/answers', survey_api.get_all_surveys_with_answers_api, name='api_get_survey_with_answers'),
     path('api/survey/upsert', survey_api.upsert_survey_api, name='api_upsert_survey'),
     path('api/game/<uuid:gameid>/survey/<uuid:survey_id>/answer/upsert', survey_api.upsert_survey_answer_api, name='api_upsert_survey_answer'),
+
+    path('api/game/<uuid:gameid>/users/generate/<int:number>', user_api.generate_users_and_access_codes_api, name='api_generate_users_and_access_codes'),
+    path('api/game/<uuid:gameid>/access_codes', user_api.get_available_access_codes_api, name='api_get_available_access_codes'),
+    path('api/game/<uuid:gameid>/users/all', user_api.get_all_users_and_access_codes_for_game_api, name='api_get_all_users_and_access_codes'),
+    path('api/game/<uuid:gameid>/users/active', user_api.get_all_active_users_for_game_api, name='api_get_all_users_and_access_codes'),
+
+    path('api/game/<uuid:gameid>/users/<int:user_id>/make_captain', user_api.make_user_captain_api, name='api_make_user_captain'),
+    path('api/game/<uuid:gameid>/team/<int:team_number>/assign_user/<int:user_id>', user_api.assign_user_to_team_api, name='api_add_user_to_team'),
+
+    path('api/users/<int:user_id>/deactivate', user_api.deactivate_user_api, name='api_deactivate_user'),
 ]

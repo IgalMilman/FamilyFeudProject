@@ -7,10 +7,15 @@ interface SurveyQuestionMultipleLinesEntryProps {
     id: string;
     questionParameters: SurveyQuestionParameters;
     answer: string;
-    setAnswer: (event: { target: { value: string; }; }) => void;
+    setAnswer: (value: string) => void;
 }
 
 export const SurveyQuestionMultipleLinesEntry = (props: SurveyQuestionMultipleLinesEntryProps): JSX.Element => {
+    const [answer, setAnswer] = React.useState<string>(props.answer ?? "");
+    const onChange = (event: { target: { value: string; }; }) => {
+        setAnswer(event.target.value);
+        props.setAnswer(event.target.value);
+    }
     return <TextField
         multiline
         label={props.label}
@@ -18,7 +23,8 @@ export const SurveyQuestionMultipleLinesEntry = (props: SurveyQuestionMultipleLi
         name={props.id}
         autoComplete='off'
         type='text'
-        value={props.answer}
-        onChange={props.setAnswer}
+        value={answer}
+        fullWidth
+        onChange={onChange}
     />
 }

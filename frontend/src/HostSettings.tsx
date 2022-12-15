@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ApiClient } from './apiclient/ApiClient'
-import Header from './components/header'
+import Header from './components/Header'
 import { HostSettingsContent } from './components/HostSettingsContent'
 import { MenuData } from './components/menu/MenuItem'
 import AppMode from './enums/AppModes'
@@ -25,6 +25,7 @@ export function HostSettings(props: {}): JSX.Element {
             menuItems={menuItems}
             currentMode={appMode}
             currentRole={ClientRole.Host}
+            realRole={ClientRole.Host}
             status={GameStatus.UNDEFINED}
             title={'Game host settings'}
             changeModeAction={(mode:AppMode): void => {

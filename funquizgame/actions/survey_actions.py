@@ -60,7 +60,6 @@ def upsert_survey_answer(request: HttpRequest, game_id: str, survey_id: str) -> 
                 "body": body,
             }
         survey_answer: SurveyAnswer = SurveyAnswer.from_json(body, request.user, survey, game)
-        print(survey_answer)
         return {"status": 200, "data": survey_answer.json()}
     except Exception as e:
         logging.error(e)

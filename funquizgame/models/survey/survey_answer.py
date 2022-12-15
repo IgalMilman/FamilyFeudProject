@@ -51,7 +51,6 @@ class SurveyAnswer(models.Model):
         else:
             [survey_answer, _] = SurveyAnswer.objects.get_or_create(unid=id)
             survey_answer.save()
-        print([id, answers])
         from .survey_question_answer import SurveyQuestionAnswer
         for question in survey.questions.all():
             answer_data = answers.get(str(question.unid), None)
@@ -60,7 +59,6 @@ class SurveyAnswer(models.Model):
                 if answer is None:
                     survey_answer.delete()
                     return None
-        print('created answer object')
         return survey_answer
 
     @staticmethod

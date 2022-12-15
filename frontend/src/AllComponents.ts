@@ -1,6 +1,7 @@
 import { GameContent } from "./GameContent";
 import { HostSettings } from "./HostSettings";
 import { LoginForm } from "./LoginForm";
+import { UserDataForm } from "./UserDataForm";
 
 export const AllComponentsList: {
   tag: string;
@@ -17,5 +18,9 @@ export const AllComponentsList: {
   {
     tag: "host-settings",
     element: HostSettings,
+  },
+  {
+    tag: "user-data-form",
+    element: UserDataForm,
   },
 ];

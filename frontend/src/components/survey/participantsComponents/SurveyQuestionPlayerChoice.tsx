@@ -1,6 +1,6 @@
 import { MenuItem, Select } from '@mui/material';
 import * as React from 'react';
-import { PlayerListing } from '../../../apiclient/models/Player';
+import { Player, PlayerByTeamAllocation } from '../../../apiclient/models/Player';
 import { SurveyQuestionParameters } from '../../../apiclient/models/survey/SurveyQuestion';
 
 interface SurveyQuestionPlayerChoiceProps {
@@ -8,41 +8,50 @@ interface SurveyQuestionPlayerChoiceProps {
     id: string;
     questionParameters: SurveyQuestionParameters;
     answer: string;
-    setAnswer: (event: { target: { value: string; }; }) => void;
-    playerListing: PlayerListing;
+    setAnswer: (value: string) => void;
+    playerAllocation: PlayerByTeamAllocation;
 }
 
 export const SurveyQuestionPlayerChoice = (props: SurveyQuestionPlayerChoiceProps): JSX.Element => {
+    const playerList: Player[] = [];
+    if (props.questionParameters?.include_self && props.playerAllocation?.self) {
+        playerList.push(props.playerAllocation.self);
+    }
+    switch (props.questionParameters?.player_filter) {
+        case 'my':
+            if (props.playerAllocation?.my) {
+                playerList.push(...props.playerAllocation.my);
+            }
+            break;
+        case 'opposing':
+            if (props.playerAllocation?.opposing) {
+                playerList.push(...props.playerAllocation.opposing);
+            }
+            break;
+        default:
+            if (props.playerAllocation?.all) {
+                playerList.push(...props.playerAllocation.all);
+            }
+            break;
+    }
+    const [answer, setAnswer] = React.useState<string>(props.answer ?? "");
+    const onChange = (event: { target: { value: string; }; }) => {
+        setAnswer(event.target.value);
+        props.setAnswer(event.target.value);
+    }
     return <Select
-        value={props.answer}
+        value={answer}
         name={props.id}
         id={props.id}
-        onChange={props.setAnswer}>
+        fullWidth
+        onChange={onChange}>
         {
-            props.questionParameters?.include_self && <MenuItem
-                key={props.playerListing?.self?.id.toString()}
-                id={props.playerListing?.self?.id.toString()}
-                value={props.playerListing?.self?.id}>
-                {props.playerListing?.self?.name}
-            </MenuItem>
-        }
-        {
-            props.questionParameters?.player_filter in ['all', 'my'] && props.playerListing?.my?.map((value) => <MenuItem
+            playerList.map((value: Player) => { return <MenuItem
                 key={value.id.toString()}
-                id={value.id.toString()}
+                id={value.toString()}
                 value={value.id}>
-                {value.name}
-            </MenuItem>
-            )
-        }
-        {
-            props.questionParameters?.player_filter in ['all', 'opposing'] && props.playerListing?.opposing?.map((value) => <MenuItem
-                key={value.id.toString()}
-                id={value.id.toString()}
-                value={value.id}>
-                {value.name}
-            </MenuItem>
-            )
+                {value.first_name}
+            </MenuItem> })
         }
     </Select>
 }

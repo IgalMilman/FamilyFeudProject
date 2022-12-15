@@ -4,10 +4,12 @@ enum AppMode {
   GameSettings = "gs",
   SurveySelection = "ss",
   Login = "lg",
+  UserDataFillIn = "ud",
   GameSelection = "gn",
   GameCreation = "gc",
   QuestionCreation = "qc",
   SurveyCreation = "sc",
-  BrowseQuestions = "bq"
+  BrowseQuestions = "bq",
+  UserSetup = "us"
 }
 export default AppMode;

@@ -1,4 +1,4 @@
-import { Table, TableContainer } from '@mui/material';
+import { Table, TableBody, TableContainer } from '@mui/material';
 import * as React from 'react'
 import { ApiClient } from '../../apiclient/ApiClient';
 import { GameAction } from '../../apiclient/models/GameAction';
@@ -16,7 +16,7 @@ export function GameSurveySelection(props: MainGameContentProps): JSX.Element {
         action.survey_id = surveyId;
         action.action = 'set_survey';
         ApiClient.getClient().performActionOnGame(action).then(
-            value=>{
+            value => {
                 if (value) {
                     props.changeAppMode(AppMode.QuestionMode);
                 }
@@ -29,17 +29,19 @@ export function GameSurveySelection(props: MainGameContentProps): JSX.Element {
         }
         , []);
     return <AutoScaleMaterialColumn>
-        <TableContainer>
+        {surveyList ? <TableContainer>
             <Table>
-                {surveyList ? surveyList.map(
-                    (surveySummary, index) => <GameSurveyTableRow
-                        surveyAction={surveySelection}
-                        surveySummmary={surveySummary}
-                        key={surveySummary.id || index}
-                    />
-                ) : "Loading surveys..."}
+                <TableBody>
+                    {surveyList.map(
+                        (surveySummary, index) => <GameSurveyTableRow
+                            surveyAction={surveySelection}
+                            surveySummmary={surveySummary}
+                            key={surveySummary.id || index}
+                        />
+                    )}
+                </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer> : "Loading surveys..."}
     </AutoScaleMaterialColumn>
 
 }

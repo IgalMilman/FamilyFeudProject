@@ -1,5 +1,3 @@
-import { APIResponse } from "./models/APIResponse";
-
 export const getCsrfToken = (): string => {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {

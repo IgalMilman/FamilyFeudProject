@@ -5,6 +5,7 @@ import { GameStatus } from "../../enums/GameStatus";
 export interface BaseAppProps {
     currentMode: AppMode;
     currentRole: ClientRole;
+    realRole: ClientRole;
     status: GameStatus;
     teamNumber?: 1 | 2 | undefined;
 }

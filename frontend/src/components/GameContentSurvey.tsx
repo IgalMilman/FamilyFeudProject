@@ -7,7 +7,7 @@ import { SurveyViewerViewPoint } from './survey/SurveyViewerViewPoint';
 
 export function GameContentSurvey(props: MainGameContentProps): JSX.Element {
     let mainElement = undefined;
-    switch (props.currentRole) {
+    switch (props.realRole) {
         case (ClientRole.Host):
             mainElement = <SurveyAnswersViewHost surveyId={props.game?.current_survey} />
             break;
@@ -15,6 +15,7 @@ export function GameContentSurvey(props: MainGameContentProps): JSX.Element {
             mainElement = <SurveyViewerViewPoint surveyId={props.game?.current_survey} />
             break;
         case (ClientRole.Participant):
+        case (ClientRole.ViewerParticipant):
             mainElement = <SurveyFormParticipant surveyId={props.game?.current_survey} />
             break;
     }

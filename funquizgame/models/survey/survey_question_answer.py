@@ -50,7 +50,6 @@ class SurveyQuestionAnswer(models.Model):
 
     @staticmethod
     def validate_data(data:dict) -> Tuple[bool, List[dict]]:
-        print(data)
         [_, answer] = SurveyQuestionAnswer._extract_data(data)
         errors:List[dict] = []
         if answer is None:

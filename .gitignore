@@ -130,3 +130,4 @@ media/*
 temp/*
 !temp/.keep
 node_modules
+_backup
