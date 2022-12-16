@@ -10,6 +10,7 @@ from funquizgame.actions.survey_actions import (
 from funquizgame.common.common_types import RequesterRole
 from funquizgame.data_getters.survey import (
     get_survey,
+    get_survey_for_game,
     get_survey_with_answers,
     get_all_available_surveys,
 )
@@ -25,7 +26,7 @@ def get_survey_api(request: HttpRequest, survey_id):
 @login_required(login_url="login")
 @require_http_methods(["GET"])
 def get_survey_for_game_api(request: HttpRequest, gameid, survey_id):
-    result = get_survey(survey_id)
+    result = get_survey_for_game(survey_id, gameid, request.user)
     return JsonResponse(result, status=result.get("status", 200), safe=False)
 
 

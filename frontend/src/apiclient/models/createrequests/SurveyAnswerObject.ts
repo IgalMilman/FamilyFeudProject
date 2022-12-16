@@ -1,7 +1,4 @@
-import { NoEmitOnErrorsPlugin } from "webpack";
-import { SurveyQuestionIsNumeric } from "../../../enums/SurveyQuestionType";
-import { Survey } from "../survey/Survey";
-import { SurveyAnswer } from "../survey/SurveyAnswer";
+import { SurveyWithAnswers } from "../survey/SurveyWithAnswers";
   
 class SurveyQuestionAnswerObject {
   constructor(answer: string | number, id: string=undefined) {
@@ -30,20 +27,18 @@ export class SurveyAnswerObject {
     return this.answers[key]?.answer;
   }
 
-  public static forSurvey(survey:Survey): SurveyAnswerObject {
+  public static forSurvey(survey:SurveyWithAnswers): SurveyAnswerObject {
     if (!survey) {
       return null;
     }
+    const answer = (survey.answers && (survey.answers.length > 0))? survey.answers[0].answers : {};
+    console.log({survey, answer});
     const result: SurveyAnswerObject = new SurveyAnswerObject();
     if (survey.questions) {
       for(const question of survey.questions) {
-        result.setAnswer(question.id, SurveyQuestionIsNumeric(question.qtype) ? 0 : '');
+        result.setAnswer(question.id, answer[question.id]?.answer??null);
       }
     }
     return result;
-  }
-
-  public static fromSurveyAnswer(surveyAnswer: SurveyAnswer): SurveyAnswerObject {
-    return null;
   }
 }

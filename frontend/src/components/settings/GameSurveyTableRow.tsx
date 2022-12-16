@@ -7,17 +7,28 @@ import SubmitButtonType from '../../enums/SubmitButtonType';
 
 interface GameSurveyTableRowProps {
     surveySummmary: SurveySummary;
-    surveyAction: (surveyId: string) => void;
+    selectSurvey: (surveyId: string) => void;
+    reviewSurvey: (surveyId: string) => void;
 }
 
 export const GameSurveyTableRow = (props: GameSurveyTableRowProps): JSX.Element => {
-    return  <TableRow>
-                <TableCell><AllLanguageOutput text={props.surveySummmary.title} /></TableCell>
-                <TableCell><SubmitButton
-                    text='Activate'
-                    onClick={() => props.surveyAction(props.surveySummmary.id)}
-                    type={SubmitButtonType.SubmitAnswer}
-                    disabled={false}
-                /></TableCell>
-            </TableRow>
+    return <TableRow>
+        <TableCell>
+            <AllLanguageOutput text={props.surveySummmary.title} />
+        </TableCell>
+        <TableCell>
+            <SubmitButton
+                text='Activate'
+                onClick={() => props.reviewSurvey(props.surveySummmary.id)}
+                type={SubmitButtonType.SubmitAnswer}
+                disabled={false}
+            />
+            <SubmitButton
+                text='View'
+                onClick={() => props.reviewSurvey(props.surveySummmary.id)}
+                type={SubmitButtonType.SubmitAnswer}
+                disabled={false}
+            />
+        </TableCell>
+    </TableRow>
 }

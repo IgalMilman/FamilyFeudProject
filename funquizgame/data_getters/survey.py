@@ -17,6 +17,23 @@ def get_survey(survey_id: str) -> Dict:
     return {}
 
 
+def get_survey_for_game(survey_id: str, game_id: str, user: GameUser) -> Dict:
+    try:
+        game: Game = Game.objects.filter(unid=game_id).first()
+        survey: Survey = Survey.objects.filter(unid=survey_id).first()
+        if survey is None:
+            return {}
+        result: Dict = survey.json()
+        try:
+
+            result['answers'] = [answer.json() for answer in survey.survey_answers.filter(game=game, created_by=user)]
+        except Exception as e:
+            pass
+    except Exception as e:
+        logging.error(e)
+    return result
+
+
 def get_survey_with_answers(survey_id: str, game_id: str):
     try:
         survey = Survey.objects.get(unid=survey_id)

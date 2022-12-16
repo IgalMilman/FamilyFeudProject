@@ -354,13 +354,13 @@ export class ApiClient {
     );
   }
 
-  public async getSurveyForGame(surveyId: string): Promise<Survey> {
+  public async getSurveyForGame(surveyId: string): Promise<SurveyWithAnswers> {
     const url: string = this.generateUrlGeneric("api_get_survey_for_game", {
       survey_id: surveyId,
     });
     return await this.sendGetRequestAndRecieveDataObject(
       url,
-      new Factory<Survey>(Survey)
+      new Factory<SurveyWithAnswers>(SurveyWithAnswers)
     );
   }
 

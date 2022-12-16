@@ -1,6 +1,6 @@
+import { Rating } from '@mui/material';
 import * as React from 'react';
 import { SurveyQuestionParameters } from '../../../apiclient/models/survey/SurveyQuestion';
-import { SurveyQuestionNumberEntry } from './SurveyQuestionNumberEntry';
 
 interface SurveyQuestionNumberChoiceProps {
     label: string;
@@ -11,5 +11,16 @@ interface SurveyQuestionNumberChoiceProps {
 }
 
 export const SurveyQuestionNumberChoice = (props: SurveyQuestionNumberChoiceProps): JSX.Element => {
-    return <SurveyQuestionNumberEntry {...props} />
+    const [answer, setAnswer] = React.useState<number | null>(props.answer);
+    const onChange = (event: React.SyntheticEvent, value: number | null) => {
+        setAnswer(value);
+        props.setAnswer(value);
+    }
+    return <Rating
+        id={props.id}
+        name={props.id}
+        max={props.questionParameters?.max ?? 5}
+        value={answer}
+        onChange={onChange}
+    />
 }

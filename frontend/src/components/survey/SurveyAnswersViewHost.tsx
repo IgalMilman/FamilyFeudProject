@@ -13,6 +13,7 @@ import SubmitButtonType from '../../enums/SubmitButtonType';
 
 interface SurveyAnswersViewHostProps {
     surveyId: string;
+    backAction?: () => void;
 }
 
 export const SurveyAnswersViewHost = (props: SurveyAnswersViewHostProps): JSX.Element => {
@@ -26,9 +27,9 @@ export const SurveyAnswersViewHost = (props: SurveyAnswersViewHostProps): JSX.El
                     ApiClient.getClient().getPlayerListing().then(
                         value => {
                             const result: { [playerId: number]: Player } = {};
-                            if (value?.teams){
-                                for(const teamId in value.teams) {
-                                    value.teams[teamId].forEach((player)=>{result[player.id] = player});
+                            if (value?.teams) {
+                                for (const teamId in value.teams) {
+                                    value.teams[teamId].forEach((player) => { result[player.id] = player });
                                 }
                             }
                             result[value?.self?.id] = value?.self;
@@ -58,6 +59,8 @@ export const SurveyAnswersViewHost = (props: SurveyAnswersViewHostProps): JSX.El
             }
             {
                 !survey && "Loading surveys, please wait..."
+            }
+            {props.backAction && <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={false} text="Back to the table" onClick={props.backAction} />
             }
         </AutoScaleMaterialRow>
     </AutoScaleMaterialColumn>
