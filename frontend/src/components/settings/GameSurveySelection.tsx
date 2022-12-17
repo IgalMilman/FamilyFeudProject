@@ -21,6 +21,7 @@ export function GameSurveySelection(props: MainGameContentProps): JSX.Element {
         const action = new GameAction();
         action.survey_id = surveyId;
         action.action = 'set_survey';
+        console.log(action);
         ApiClient.getClient().performActionOnGame(action).then(
             value => {
                 if (value) {

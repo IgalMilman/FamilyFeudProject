@@ -19,7 +19,7 @@ export const GameSurveyTableRow = (props: GameSurveyTableRowProps): JSX.Element 
         <TableCell>
             <SubmitButton
                 text='Activate'
-                onClick={() => props.reviewSurvey(props.surveySummmary.id)}
+                onClick={() => props.selectSurvey(props.surveySummmary.id)}
                 type={SubmitButtonType.SubmitAnswer}
                 disabled={false}
             />

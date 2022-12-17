@@ -5,10 +5,15 @@ import { Survey } from '../../apiclient/models/survey/Survey'
 import { SurveySummary } from '../../apiclient/models/survey/SurveySummary'
 import { AutoScaleMaterialColumn } from '../common/AutoScaleMaterialColumn'
 import { ScreenState, TableFormScreenState } from './common/TableFormState'
-import { SurveySelectionTable } from './UpsertSurvey/SurveySelectionTable'
-import { UpsertSurveyForm } from './UpsertSurvey/UpsertSurveyForm'
+import { SurveySelectionTable } from './Survey/SurveySelectionTable'
+//import { UpsertSurveyScreen } from './Survey/UpsertSurveyScreen'
 
-export function BrowseQuestionScreen(): JSX.Element {
+
+interface SurveyScreenProps {
+
+}
+
+export const SurveyScreen = (props: SurveyScreenProps): JSX.Element => {
     const [state, setState] = React.useState<ScreenState<Survey>>(new ScreenState());
     const editSurvey = (survey: SurveySummary) => {
         ApiClient.getClient().getSurvey(survey.id).then((value: Survey) => {
@@ -16,7 +21,7 @@ export function BrowseQuestionScreen(): JSX.Element {
         })
     }
     let screen: JSX.Element;
-    switch (state.state) {
+    /*switch (state.state) {
         case TableFormScreenState.Table:
             screen = <SurveySelectionTable editSurvey={editSurvey} />
             break;
@@ -27,15 +32,6 @@ export function BrowseQuestionScreen(): JSX.Element {
                 backToTable={() => setState(new ScreenState())}
             />
             break;
-    }
+    }*/
     return <>{screen}</>
-}
-
-
-interface SurveyScreenProps {
-
-}
-
-export const SurveyScreen = (props: SurveyScreenProps): JSX.Element => {
-    return <></>
 }

@@ -20,7 +20,7 @@ class Survey(MultiLanguageField):
 
     def json(self)->Dict:
         result = self.json_short()
-        result['questions'] = [question.json() for question in self.questions.all()]
+        result['questions'] = [question.json() for question in self.questions.all().order_by('priority')]
         return result
     
     def json_with_answers(self, game:Game)->Dict:
