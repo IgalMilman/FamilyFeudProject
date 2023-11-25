@@ -32,7 +32,6 @@ export class SurveyAnswerObject {
       return null;
     }
     const answer = (survey.answers && (survey.answers.length > 0))? survey.answers[0].answers : {};
-    console.log({survey, answer});
     const result: SurveyAnswerObject = new SurveyAnswerObject();
     if (survey.questions) {
       for(const question of survey.questions) {

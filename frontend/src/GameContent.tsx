@@ -26,7 +26,7 @@ export const GameContent = (props: { role: string, team: 1 | 2 | undefined, game
     game.gameStatus = GameStatusFromString(game.status);
   }
   const role: ClientRole = (realRole == ClientRole.ViewerParticipant && game?.is_captain) ? ClientRole.Participant : GetFixedClientRole(realRole);
-  const pollInterval: number = role == ClientRole.ViewerParticipant ? 5 : 1;
+  const pollInterval: number = role == ClientRole.ViewerParticipant ? 10 : 1;
   const [autoPollPeriod, changeAutoPoll] = React.useState<number>(pollInterval);
   React.useEffect(() => {
     ApiClient.getClientWithRoleAndGame(role, props.gameid);

@@ -11,7 +11,13 @@ import { SubmitButton } from '../common/QuestionSubmitButton';
 
 
 export function GameStateChanging(props: MainGameContentProps): JSX.Element {
-    const [selection, changeSelection] = React.useState<string>(props.game?.gameStatus ? props.game.gameStatus : GameStatus.BEGINNING);
+    const [selection, changeSelection] = React.useState<string>(props.game?.gameStatus ?? GameStatus.BEGINNING);
+    React.useEffect(
+        () => {
+            changeSelection(props.game?.gameStatus ?? GameStatus.BEGINNING);
+        },
+        [props.game?.gameStatus]
+    );
     const selectChnage = (event: SelectChangeEvent) => {
         changeSelection(event.target.value);
     }
