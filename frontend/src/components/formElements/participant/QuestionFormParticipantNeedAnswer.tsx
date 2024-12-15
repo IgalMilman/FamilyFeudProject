@@ -4,6 +4,7 @@ import { QuestionDisplay } from '../common/QuestionDisplay';
 import { FamilyFeudQuestionParticipant } from './FamilyFeudQuestionParticipant';
 import { NumberEnterQuestionParticipant } from './NumberEnterQuestionParticipant';
 import { ButtonQuestionParticipant } from './ButtonQuestionParticipant';
+import { OpenQuestionParticipant } from './OpenQuestionParticipant';
 import { SubmitButton } from '../../common/QuestionSubmitButton';
 import SubmitButtonType from '../../../enums/SubmitButtonType';
 import { AutoScaleMaterialRow } from '../../common/AutoScaleMaterialRow';
@@ -15,10 +16,11 @@ import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipant): JSX.Element {
     const questionType: QuestionType = QuestionTypeFromNumber(props.question?.question_data?.qtype)
     const [value, changeValue] = React.useState<string>("0");
+    const [textValue, changeTextValue] = React.useState<string>("");
     const onChange = (newValue: string) => {
         changeValue(newValue);
     }
-    let formItem:JSX.Element = null;
+    let formItem: JSX.Element = null;
     let needButton = false;
     switch (questionType) {
         case (QuestionType.NumberEnter): {
@@ -26,6 +28,14 @@ export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipan
                 callBack={onChange}
                 question={props.question}
                 value={value} />);
+            needButton = true;
+            break;
+        }
+        case (QuestionType.OpenQuestion): {
+            formItem = (<OpenQuestionParticipant
+                callBack={changeTextValue}
+                question={props.question}
+                value={textValue} />);
             needButton = true;
             break;
         }
@@ -45,13 +55,14 @@ export function QuestionFormParticipantNeedAnswer(props: QuestionPropsParticipan
                 question={props.question}
             />
             <AutoScaleMaterialRow>
-            {formItem}
-            {needButton && <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={!value} onClick={() => {
-                let answer:GiveAnswer = new GiveAnswer();
-                answer.value = Number.parseInt(value);
-                answer.teamnumber = props.teamNumber;
-                ApiClient.getClient().submitAnswer(props.question?.id, answer)
-            }} />}
+                {formItem}
+                {needButton && <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={!value} onClick={() => {
+                    let answer: GiveAnswer = new GiveAnswer();
+                    answer.value = Number.parseInt(value);
+                    answer.textanswer = textValue;
+                    answer.teamnumber = props.teamNumber;
+                    ApiClient.getClient().submitAnswer(props.question?.id, answer)
+                }} />}
             </AutoScaleMaterialRow>
         </AutoScaleMaterialColumn>
     )

@@ -7,6 +7,7 @@ export class RealAnswer {
   team: undefined | null | 1 | 2;
   answerdata: AnswerData;
   value: number;
+  textanswer: string;
   add_points: number;
   created: number;
 }

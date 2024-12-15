@@ -7,6 +7,7 @@ import { NumberEnterQuestionShow } from './NumberEnterQuestionShow';
 import { QuestionProps } from '../common/QuestionProps';
 import { ButtonQuestionShow } from './ButtonQuestionShow';
 import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
+import { OpenQuestionShow } from './OpenQuestionShow';
 
 export function QuestionFormShow(props: QuestionProps): JSX.Element {
     const questionType = QuestionTypeFromNumber(props.question?.question_data?.qtype);
@@ -22,6 +23,10 @@ export function QuestionFormShow(props: QuestionProps): JSX.Element {
         }
         case (QuestionType.FirstButton): {
             formItem = (<ButtonQuestionShow {...props} />)
+            break;
+        }
+        case (QuestionType.OpenQuestion): {
+            formItem = (<OpenQuestionShow {...props} />)
             break;
         }
     }

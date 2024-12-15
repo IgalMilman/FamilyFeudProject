@@ -2,7 +2,10 @@ type AvailableUrlParameters =
   | "game_id"
   | "survey_id"
   | "answer_id"
-  | "question_id";
+  | "question_id"
+  | "bet_opportunity"
+  | "bet_id"
+  | "bet_result";
 
 export const GENERIC_URL_MAP_GAME_ENDPOINTS: {
   [key: string]: (value: { [vkey: string]: string }) => string;
@@ -23,6 +26,8 @@ export const GENERIC_URL_MAP_GAME_ENDPOINTS: {
     `/api/game/${value["game_id"]}/question/all/`,
   api_answer_reveal: (value) =>
     `/api/game/${value["game_id"]}/answer/${value["answer_id"]}/reveal`,
+  api_answer_reveal_no_reset: (value) =>
+    `/api/game/${value["game_id"]}/answer/${value["answer_id"]}/reveal_no_reset`,
   api_team_name_change: (value) => `/api/game/${value["game_id"]}/team/name`,
 };
 
@@ -61,3 +66,13 @@ export const GENERIC_URL_MAP_SURVEY_ENDPOINTS: {
   api_upsert_answer_to_survey: (value) =>
     `api/game/${value["game_id"]}/survey/${value["survey_id"]}/answer/upsert`,
 };
+
+export const GENERIC_URL_MAP_BET_ENDPOINTS:{
+  [key: string]: (value: { [vkey: string]: string }) => string;
+} = {
+  create_bet: (value) => `/api/game/${value["game_id"]}/create_bet/`,
+  assign_bet_op: (value) => `/api/game/${value["game_id"]}/betop/${value["bet_opportunity"]}/assign/${value["question_id"]}`,
+  place_bet: (value) => `/api/game/${value["game_id"]}/betop/${value["bet_opportunity"]}/place`,
+  assign_bet: (value) => `/api/game/${value["game_id"]}/bet/${value["bet_id"]}/${value["bet_result"]}`,
+  reveal_bet: (value) => `/api/game/${value["game_id"]}/bet/${value["bet_id"]}/reveal`,
+}

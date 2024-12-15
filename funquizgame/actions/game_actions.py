@@ -6,7 +6,7 @@ from django.http.request import HttpRequest
 
 from funquizgame.common.common_functions import is_blank
 from funquizgame.common.common_types import GAME_STATUSES
-from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team, GameUserParticipation
+from funquizgame.models import Game, QuestionData, RealAnswer, RealQuestion, Survey, Team, GameUserParticipation, BetOpportunity
 
 
 def create_game(request: HttpRequest, role: str) -> Dict:
@@ -87,6 +87,7 @@ def set_next_question(game: Game, body: Dict, result: Dict, role: str) -> bool:
             if real_question_tuple[1]:
                 real_question.save()
                 RealAnswer.create_real_answers(real_question, question)
+            game.current_bet = get_betting_opportunity(game, real_question)
             game.current_question = real_question.unid
             game.current_survey = None
             game.status = GAME_STATUSES.QUESTION.value
@@ -101,6 +102,16 @@ def set_next_question(game: Game, body: Dict, result: Dict, role: str) -> bool:
     result["body"] = body
     return False
 
+def get_betting_opportunity(game: Game, question: RealQuestion) -> BetOpportunity:
+    bet_opportunity = question.betopportunity_set.first()
+    if bet_opportunity is not None:
+        return bet_opportunity.unid
+    if game.current_bet is None: 
+        return None
+    bet_opportunity = BetOpportunity.objects.get(unid=game.current_bet)
+    if bet_opportunity is not None and bet_opportunity.question is None:
+        return bet_opportunity.unid
+    return None
 
 def set_status(game: Game, body: Dict, result: Dict, role: str) -> bool:
     if "status" not in body:

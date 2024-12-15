@@ -58,6 +58,7 @@ class GameQuestionTypes(IntEnum):
     NUMBER_ENTER = 1
     FIRST_BUTTON = 2
     FAMILY_FUID = 3
+    OPEN_QUESTION = 4
 
     @classmethod
     def has_value(cls, value) -> bool:
@@ -71,7 +72,8 @@ class GameQuestionTypes(IntEnum):
     def get_valid_choices():
         return [(GameQuestionTypes.NUMBER_ENTER.value, "Enter a number"),
                 (GameQuestionTypes.FIRST_BUTTON.value, "First button click"),
-                (GameQuestionTypes.FAMILY_FUID.value, "Family feud type")]
+                (GameQuestionTypes.FAMILY_FUID.value, "Family feud type"),
+                (GameQuestionTypes.OPEN_QUESTION.value, "Open ended question")]
 
 
 class GAME_STATUSES(Enum):
@@ -79,6 +81,7 @@ class GAME_STATUSES(Enum):
     SETTING_TEAMS = 'st'
     CHOOSING_TEAMS = 'ct'
     DASHBOARD = 'dash'
+    BETTING = 'bet'
     QUESTION = 'ques'
     SURVEY = 'surv'
     ENDING = 'end'
@@ -97,6 +100,7 @@ class GAME_STATUSES(Enum):
                 (GAME_STATUSES.SETTING_TEAMS.value, "Setting teams"),
                 (GAME_STATUSES.CHOOSING_TEAMS.value, "Choosing teams"),
                 (GAME_STATUSES.DASHBOARD.value, "Dashboard"),
+                (GAME_STATUSES.BETTING.value, "Betting"),
                 (GAME_STATUSES.QUESTION.value, "Question"),
                 (GAME_STATUSES.SURVEY.value, "Survey"),
                 (GAME_STATUSES.ENDING.value, "Ending")]

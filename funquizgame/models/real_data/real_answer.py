@@ -18,6 +18,7 @@ class RealAnswer(RealDataAbstract):
     question = models.ForeignKey(RealQuestion, on_delete=CASCADE, db_index=True)
     team = models.ForeignKey(Team, on_delete=CASCADE, null=True, blank=True)
     value = models.CharField("Entered value", null=True, blank=True, max_length=70)
+    text_answer = models.CharField("Entered text value", null=True, blank=True, max_length=200)
     additional_points = models.SmallIntegerField("Additional points", default=0)
     answer_created = models.DateTimeField(
         "Creation time", auto_now_add=False, null=True, blank=True
@@ -40,6 +41,7 @@ class RealAnswer(RealDataAbstract):
             if self.answer_data is not None:
                 result["answerdata"] = self.answer_data.json(role)
             result["value"] = self.value
+            result["textanswer"] = self.text_answer
             result["add_points"] = self.additional_points
             return result
         else:
@@ -48,6 +50,7 @@ class RealAnswer(RealDataAbstract):
                 if self.answer_data is not None:
                     result["answerdata"] = self.answer_data.json(role)
                 result["value"] = self.value
+                result["textanswer"] = self.text_answer
                 result["add_points"] = self.additional_points
             return result
 

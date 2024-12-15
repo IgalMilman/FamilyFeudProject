@@ -10,6 +10,7 @@ import { AutoScaleMaterialColumn } from '../../common/AutoScaleMaterialColumn';
 import { SubmitButton } from '../../common/QuestionSubmitButton';
 import SubmitButtonType from '../../../enums/SubmitButtonType';
 import { ApiClient } from '../../../apiclient/ApiClient';
+import { OpenQuestionHost } from './OpenQuestionHost';
 
 export function QuestionFormHost(props: QuestionProps): JSX.Element {
     let formItem = null;
@@ -24,6 +25,10 @@ export function QuestionFormHost(props: QuestionProps): JSX.Element {
         }
         case (QuestionType.FirstButton): {
             formItem = (<ButtonQuestionHost {...props} />)
+            break;
+        }
+        case (QuestionType.OpenQuestion): {
+            formItem = (<OpenQuestionHost {...props} />)
             break;
         }
     }

@@ -7,12 +7,15 @@ import { EnterTeamsNamePatricipant } from './formElements/participant/EnterTeams
 import { GameContentQuestion } from './GameContentQuestion';
 import { GameContentSurvey } from './GameContentSurvey';
 import { GameContentTeamChoice } from './GameContentTeamChoice';
+import { GameContentBet } from './GameContentBet';
 
 
 export function GameContentScreen(props: MainGameContentProps): JSX.Element {
     switch(props.game?.gameStatus) {
         case GameStatus.QUESTION:
             return <GameContentQuestion {...props} />
+        case GameStatus.PLACING_BETS:
+            return <GameContentBet {...props} />
         case GameStatus.SURVEY:
             return <GameContentSurvey {...props} />
         case GameStatus.SETTING_TEAMS:

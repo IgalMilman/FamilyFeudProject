@@ -11,17 +11,17 @@ interface OneAnswerInputElementProps {
 }
 
 export const OneAnswerInputElement = (props: OneAnswerInputElementProps): JSX.Element => {
-    const input: JSX.Element = props.questionType == QuestionType.FirstButton ?
-        <AnswerInputText
-            title='Enter answer'
-            answer={props.answer}
-        />
-        : <AnswerInputNumber
+    const input: JSX.Element = props.questionType == QuestionType.NumberEnter ?
+        <AnswerInputNumber
             title='Enter answer'
             initialValue={props.answer.correct_value}
             setNumber={(value: number): void => {
                 props.answer.correct_value = value;
             }} />
+        : <AnswerInputText
+            title='Enter answer'
+            answer={props.answer}
+        />;
     return <>
         <AutoScaleMaterialRow>
             <AnswerInputNumber

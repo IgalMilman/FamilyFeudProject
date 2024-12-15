@@ -34,6 +34,9 @@ class Game(models.Model):
     current_question = models.UUIDField(
         "Current question", editable=True, unique=False, null=True, blank=True
     )
+    current_bet = models.UUIDField(
+        "Current bet", editable=True, unique=False, null=True, blank=True
+    )
     current_survey = models.UUIDField(
         "Current survey", editable=True, unique=False, null=True, blank=True
     )
@@ -56,9 +59,11 @@ class Game(models.Model):
             "started": self.started_on,
             "status": self.status,
             "current_question": self.current_question,
+            "current_bet": self.current_bet,
             "current_survey": self.current_survey,
             "teams": teams,
             "active_question": self.get_active_question(role),
+            "active_bet": self.get_active_bet(role),
             "title": self.title,
             "viewer_access_code": self.get_access_code_for_viewer(),
             "team_on": user.team,
@@ -94,3 +99,13 @@ class Game(models.Model):
         except Exception as e:
             logging.error(e)
         return None
+
+    def get_active_bet(self, role: RequesterRole) -> Dict:
+        try:
+            from funquizgame.models import BetOpportunity
+
+            bet = BetOpportunity.objects.filter(unid=self.current_bet).first()
+            return None if bet is None else bet.json(role)
+        except Exception as e:
+            logging.error(e)
+        return {"message": "Error getting active bet"}

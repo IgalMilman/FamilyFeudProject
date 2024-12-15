@@ -99,6 +99,17 @@ def answer_reveal_api(request: HttpRequest, gameid, answerid):
 
 
 @login_required(login_url="login")
+@require_http_methods(["PUT"])
+def answer_reveal_no_reset_api(request: HttpRequest, gameid, answerid):
+    role = RequesterRole.get_role_from_request(request)
+    if role.is_host():
+        result = reveal_answer(request, role, gameid, answerid, False)
+        return JsonResponse(result, status=result.get("status", 403), safe=False)
+    else:
+        return JsonResponse({}, status=403, safe=False)
+
+
+@login_required(login_url="login")
 @require_http_methods(["GET"])
 def question_get_all_api(request: HttpRequest):
     role = RequesterRole.get_role_from_request(request)

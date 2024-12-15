@@ -19,10 +19,11 @@ def give_answer(
     try:
         body = json.loads(request.body.decode("utf-8"))
         value = body.get("value", None)
+        textanswer = body.get("textanswer", None)
         teamid = body.get("teamid", None)
         answerid = body.get("answerid", None)
         reveal = body.get("reveal", False)
-        if value is None and answerid is None:
+        if value is None and answerid is None and textanswer is None:
             result["status"] = 401
             result["error"] = "Need either an answerid or a value"
             result["body"] = body
@@ -55,6 +56,7 @@ def give_answer(
             team.points = team.points + answer.points_value
             team.save()
         real_answer.value = value
+        real_answer.text_answer = textanswer
         real_answer.team = team
         if reveal:
             real_answer.is_shown = True
@@ -111,13 +113,13 @@ def complete_question(
 
 
 def reveal_answer(
-    request: HttpRequest, role: RequesterRole, game_id, answerid: str
+    request: HttpRequest, role: RequesterRole, game_id, answerid: str, reset: bool = True
 ) -> Dict:
     result = {}
     try:
         answer: RealAnswer = RealAnswer.objects.get(unid=answerid)
         answer.is_shown = True
-        if answer.team is not None:
+        if reset and answer.team is not None:
             previous_team: Team = answer.team
             previous_team.points = (
                 previous_team.points

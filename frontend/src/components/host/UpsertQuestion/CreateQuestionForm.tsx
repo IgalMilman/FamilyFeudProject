@@ -50,6 +50,7 @@ export const CreateQuestionForm = (): JSX.Element => {
                     <MenuItem value={QuestionType.FamilyFeud}>Family feud</MenuItem>
                     <MenuItem value={QuestionType.FirstButton}>First button</MenuItem>
                     <MenuItem value={QuestionType.NumberEnter}>Number enter</MenuItem>
+                    <MenuItem value={QuestionType.OpenQuestion}>Open ended</MenuItem>
                 </Select>
             </AutoScaleMaterialRow>
             <AutoScaleMaterialRow>

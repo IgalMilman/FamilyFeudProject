@@ -14,7 +14,7 @@ export class QuestionObject {
   }
 
   id: string | undefined;
-  qtype: 1 | 2 | 3;
+  qtype: 1 | 2 | 3 | 4;
   text: MultiTextCreationObject[];
   answers: AnswerObject[];
 

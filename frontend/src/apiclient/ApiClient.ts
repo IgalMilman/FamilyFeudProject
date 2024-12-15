@@ -18,6 +18,7 @@ import { QuestionType } from "../enums/QuestionType";
 import { QuestionSummary } from "./models/QuestionSummary";
 import { AnswerData } from "./models/AnswerData";
 import {
+  GENERIC_URL_MAP_BET_ENDPOINTS,
   GENERIC_URL_MAP_GAME_ENDPOINTS,
   GENERIC_URL_MAP_QUESTION_ENDPOINTS,
   GENERIC_URL_MAP_SURVEY_ENDPOINTS,
@@ -31,6 +32,9 @@ import { SurveyAnswer } from "./models/survey/SurveyAnswer";
 import { SurveyWithAnswers } from "./models/survey/SurveyWithAnswers";
 import { PlayerListing } from "./models/Player";
 import { AccessCode } from "./models/AccessCode";
+import { BetOpportunity } from "./models/BetOpportunity";
+import { PlacedBet } from "./models/PlacedBet";
+import { PlaceBetAction } from "./models/PlaceBetAction";
 
 declare global{
   var apiClient: any;
@@ -49,7 +53,8 @@ export class ApiClient {
     GENERIC_URL_MAP_GAME_ENDPOINTS,
     GENERIC_URL_MAP_QUESTION_ENDPOINTS,
     GENERIC_URL_MAP_USER_ENDPOINTS,
-    GENERIC_URL_MAP_SURVEY_ENDPOINTS
+    GENERIC_URL_MAP_SURVEY_ENDPOINTS,
+    GENERIC_URL_MAP_BET_ENDPOINTS,
   );
   urlMap: { [key: string]: (game_id: string, props: string) => string } = {
     api_available_games: () => "/api/game/all",
@@ -69,6 +74,8 @@ export class ApiClient {
       `/api/game/${game_id}/question/all/`,
     api_answer_reveal: (game_id: string, answer_id: string) =>
       `/api/game/${game_id}/answer/${answer_id}/reveal`,
+    api_answer_reveal_no_reset: (game_id: string, answer_id: string) =>
+      `/api/game/${game_id}/answer/${answer_id}/reveal_no_reset`,
     api_team_name_change: (game_id: string) => `/api/game/${game_id}/team/name`,
     api_question: (game_id: string, question_id: string) =>
       `/api/question/${question_id}`,
@@ -314,8 +321,8 @@ export class ApiClient {
     return null;
   }
 
-  public async revealAnswer(answerId: string): Promise<RealAnswer> {
-    const url: string = this.generateUrl("api_answer_reveal", answerId);
+  public async revealAnswer(answerId: string, resetTeam: boolean = true): Promise<RealAnswer> {
+    const url: string = this.generateUrl(resetTeam ? "api_answer_reveal" : "api_answer_reveal_no_reset", answerId);
     const response = await fetch(url, {
       method: "PUT",
       headers: this.generateHeaders(),
@@ -454,6 +461,55 @@ export class ApiClient {
     return await this.sendGetRequestAndRecieveDataObject(
       url,
       new Factory<PlayerListing>(PlayerListing)
+    );
+  }
+
+  public async createAndRevealBetOpportunity(): Promise<BetOpportunity> {
+    const url: string = this.generateUrlGeneric("create_bet", {});
+    return await this.sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<BetOpportunity>(BetOpportunity)
+    );
+  }
+
+  public async assignBetOpportunity(betOpId: string, questionId: string): Promise<BetOpportunity> {
+    const url: string = this.generateUrlGeneric("assign_bet_op", {
+      "bet_opportunity":betOpId,
+      "question_id":questionId,
+    });
+    return await this.sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<BetOpportunity>(BetOpportunity)
+    );
+  }
+
+  public async assignBet(betId: string, betResult: number): Promise<BetOpportunity> {
+    const url: string = this.generateUrlGeneric("assign_bet", {
+      "bet_id":betId,
+      "bet_result":betResult.toString(),
+    });
+    return await this.sendGetRequestAndRecieveDataObject(
+      url,
+      new Factory<BetOpportunity>(BetOpportunity)
+    );
+  }
+
+  public async placeBet(betOpId: string, data: PlaceBetAction): Promise<APIResponse<PlacedBet>> {
+    const url: string = this.generateUrlGeneric("place_bet", {
+      "bet_opportunity":betOpId,
+    });
+    return await this.sendPutRequestAndReieveAnswer(
+      url,
+      data
+    );
+  }
+
+  public async revealBet(betId: string): Promise<boolean> {
+    const url: string = this.generateUrlGeneric("reveal_bet", {
+      "bet_id": betId,
+    });
+    return await this.sendGetRequest(
+      url
     );
   }
 

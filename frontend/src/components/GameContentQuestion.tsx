@@ -8,6 +8,9 @@ import { MainGameContentProps } from './common/MainGameContentProps';
 import { GameStatus } from '../enums/GameStatus';
 import { EnterTeamsNamePatricipant } from './formElements/participant/EnterTeamsParticipant';
 import { getTeam } from './common/Utils';
+import { BetRow } from './betting/BetRow';
+import { AutoScaleMaterialColumn } from './common/AutoScaleMaterialColumn';
+import { AutoScaleMaterialRow } from './common/AutoScaleMaterialRow';
 
 export function GameContentQuestion(props: MainGameContentProps): JSX.Element {
     const question: RealQuestion = props.game?.active_question;
@@ -33,5 +36,12 @@ export function GameContentQuestion(props: MainGameContentProps): JSX.Element {
             }
             break;
     }
-    return question ? mainElement : <></>;
+    return question ?
+        <AutoScaleMaterialColumn>
+            <BetRow betOpportunity={props.game.active_bet} questionId={question.id} {...props} />
+            <AutoScaleMaterialRow>
+                {mainElement}
+            </AutoScaleMaterialRow>
+        </AutoScaleMaterialColumn>
+        : <></>;
 }

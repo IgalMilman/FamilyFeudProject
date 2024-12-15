@@ -30,6 +30,7 @@ export function GameStateChanging(props: MainGameContentProps): JSX.Element {
                     id='state'
                     onChange={selectChnage}>
                     <MenuItem value={GameStatus.BEGINNING}>Beginning</MenuItem>
+                    <MenuItem value={GameStatus.PLACING_BETS}>Place Bets</MenuItem>
                     <MenuItem value={GameStatus.QUESTION}>Question (Do not set directly)</MenuItem>
                     <MenuItem value={GameStatus.SURVEY}>Survey (Do not set directly)</MenuItem>
                     <MenuItem value={GameStatus.CHOOSING_TEAMS}>Choosing teams</MenuItem>
@@ -40,6 +41,10 @@ export function GameStateChanging(props: MainGameContentProps): JSX.Element {
             </AutoScaleMaterialColumn>
             <AutoScaleMaterialColumn justifyContent="flex-start" alignItems="flex-start">
                 <SubmitButton type={SubmitButtonType.SubmitAnswer} disabled={selection == GameStatus.QUESTION} onClick={function (): void {
+                    if (selection == GameStatus.PLACING_BETS) {
+                        ApiClient.getClient().createAndRevealBetOpportunity();
+                        return;
+                    }
                     const action: GameAction = new GameAction();
                     action.action = 'set_status';
                     action.status = GameStatusFromString(selection);
