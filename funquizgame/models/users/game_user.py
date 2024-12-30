@@ -28,6 +28,8 @@ class GameUser(AbstractUser):
         null=True,
         default=None,
     )
+    first_name = models.TextField("first name", max_length=150, blank=True)
+    last_name = models.TextField("last name", max_length=150, blank=True)
 
     def json_full(self) -> Dict:
         result: Dict = self.json()
